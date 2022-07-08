@@ -2,7 +2,8 @@
 module.exports = {
   content: [
     "./pages/_app.js.js",
-    "./pages/Homepage.js"
+    "./pages/Homepage.js",
+    "./pages/Login.js"
     // add components here if needed
   ],
   theme: {
