@@ -1,8 +1,40 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
+import { authentication } from '../firebase/clientApp.ts'
 
 export default function Login() {
+  const [phoneNumber, setPhoneNumber] = useState("")
+
+  const updateNumber = (number) => {
+    setPhoneNumber(phoneNumber => number)
+    console.log(phoneNumber)
+  }
+
+  const generateRecaptcha = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        onSignInSubmit();
+      }
+    }, authentication);
+  }
+
+  const requestOTP = (e) => {
+    generateRecaptcha();
+    let appVerifier = window.recaptchaVerifier;
+    signInWithPhoneNumber(authentication, phoneNumber, appVerifier)
+    .then(confirmationResult => {
+      window.confirmationResult = confirmationResult;
+    }).catch((error) => {
+      // error - sms not sent
+      console.log(error)
+    });
+  }
+
+
   return (
 
     
@@ -39,7 +71,9 @@ export default function Login() {
             <div className="flex space-x-2 justify-center pt-4">
                 <button type="button" className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out">Submit</button>
             </div>
-        </div>
+        </div> 
+
+        <div id='recaptcha-container'></div>
 
       </main>
 
