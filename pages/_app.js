@@ -3,7 +3,7 @@ import Login from './Login'
 import Homepage from './Homepage'
 
 function MyApp({ Component, pageProps }) {
-  return <Homepage/>
+  return <Login/>
 }
 
 export default MyApp

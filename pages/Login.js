@@ -3,14 +3,13 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 import { authentication } from '../firebase/clientApp.ts'
+import React, { useState } from 'react';
 
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("")
-
-  const updateNumber = (number) => {
-    setPhoneNumber(phoneNumber => number)
-    console.log(phoneNumber)
-  }
+  const [phoneInputShown, setPhoneInputShown] = useState(true)
+  const [codeInputShown, setCodeInputShown] = useState(false)
+  const [otp, setOTP] = useState("")
 
   const generateRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -23,10 +22,13 @@ export default function Login() {
   }
 
   const requestOTP = (e) => {
+    console.log("Requesting OTP for phone number: " + phoneNumber)
     generateRecaptcha();
     let appVerifier = window.recaptchaVerifier;
     signInWithPhoneNumber(authentication, phoneNumber, appVerifier)
     .then(confirmationResult => {
+      setPhoneInputShown(false)
+      setCodeInputShown(true)
       window.confirmationResult = confirmationResult;
     }).catch((error) => {
       // error - sms not sent
@@ -34,12 +36,27 @@ export default function Login() {
     });
   }
 
+  const verifyOTP = () => {
+
+    if(otp.length === 6) {
+      // verify OTP
+      let confirmationResult = window.confirmationResult;
+
+      confirmationResult.confirm(otp).then((result) => {
+        // User signed in successfully.
+        const user = result.user;
+        // ...
+      }).catch((error) => {
+        // User couldn't sign in (bad verification code?)
+        // ...
+      });
+
+    }
+  }
 
   return (
-
-    
+  
     <div className={styles.container}>
-
     
     <Head>
         <title>Create Next App</title>
@@ -50,6 +67,8 @@ export default function Login() {
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"></link>    
     </Head>
       <main className={styles.main}>
+      {phoneInputShown === true ? 
+      <>
         <h1 className="text-2xl font-bold font-lato text-center">
             Hey there! 👋🏼  Welcome to UTFSA! 🇵🇭
         </h1>
@@ -61,17 +80,55 @@ export default function Login() {
                 </div>
                 <input
                 type="tel"
-                name="price"
-                id="price"
+                value={phoneNumber}
                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
                 placeholder="(000) 000 - 0000"
+                onChange={e => setPhoneNumber(e.target.value)}
                 />
             </div>
 
             <div className="flex space-x-2 justify-center pt-4">
-                <button type="button" className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out">Submit</button>
+                <button 
+                type="submit" 
+                className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                onClick={() => requestOTP()}
+                >Submit</button>
             </div>
-        </div> 
+          </div> 
+        </>
+        : null
+        }
+
+      {codeInputShown === true ? 
+      <>
+        <h1 className="text-2xl font-bold font-lato text-center">
+            We sent you a code!
+        </h1>
+        <h2 className='text-md font-bold font-lato text-center'>Please enter it below.</h2>
+        <div>
+            <div className="mt-1 relative rounded-md shadow-sm pt-3">
+                <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">🔑</span>
+                </div>
+                <input
+                type="tel"
+                value={otp}
+                onChange={e => setOTP(e.target.value)}
+                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
+                />
+            </div>
+
+            <div className="flex space-x-2 justify-center pt-4">
+                <button 
+                type="button" 
+                className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                onClick={() => verifyOTP()}
+                >Submit</button>
+            </div>
+          </div> 
+        </>
+        : null
+        }
 
         <div id='recaptcha-container'></div>
 
@@ -91,4 +148,5 @@ export default function Login() {
       </footer>
     </div>
   )
+
 }
