@@ -4,6 +4,7 @@ import styles from '../styles/Home.module.css'
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 import { authentication } from '../firebase/clientApp.ts'
 import React, { useState } from 'react';
+import { getDatabase, ref, set } from "firebase/database";
 
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("")
@@ -20,6 +21,7 @@ export default function Login() {
       }
     }, authentication);
   }
+  
 
   const requestOTP = (e) => {
     console.log("Requesting OTP for phone number: " + phoneNumber)
@@ -67,6 +69,7 @@ export default function Login() {
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"></link>    
     </Head>
       <main className={styles.main}>
+
       {phoneInputShown === true ? 
       <>
         <h1 className="text-2xl font-bold font-lato text-center">
