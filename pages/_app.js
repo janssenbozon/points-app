@@ -4,7 +4,9 @@ import Homepage from './Homepage.js'
 import CreateNewUser from './createNewUser'
 
 function MyApp({ Component, pageProps }) {
-  return <CreateNewUser/>
+  return (
+      <Component {...pageProps} />
+  );
 }
 
 export default MyApp

@@ -5,12 +5,14 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 import { authentication } from '../firebase/clientApp.ts'
 import React, { useState } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
+import { Router, useRouter } from 'next/router'
 
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [phoneInputShown, setPhoneInputShown] = useState(true)
   const [codeInputShown, setCodeInputShown] = useState(false)
   const [otp, setOTP] = useState("")
+  const router = useRouter()
 
   const generateRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -47,6 +49,12 @@ export default function Login() {
       confirmationResult.confirm(otp).then((result) => {
         // User signed in successfully.
         const user = result.user;
+
+        if(user) {
+          router.push('/Homepage')
+        } else {
+          router.push(`/createNewUser?phoneNumber=${phoneNumber}`)
+        }
         // ...
       }).catch((error) => {
         // User couldn't sign in (bad verification code?)

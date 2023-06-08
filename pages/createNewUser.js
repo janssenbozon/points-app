@@ -1,42 +1,39 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
-import { authentication } from '../firebase/clientApp.ts'
 import React, { useState } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
-import { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/solid'
+import { CheckCircleIcon } from '@heroicons/react/outline'
+import { useRouter } from 'next/router';
 
 const Prompt = (props) => {
 
     return (
-    <>
-        <h1 className="text-2xl font-bold font-lato text-center">
-            {props.largeText}
-        </h1>
-        <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
-        <div>
-            <div className="mt-1 relative rounded-md shadow-sm pt-3">
-                <input
-                    type="tel"
-                    value={props.value}
-                    className="focus:ring-indigo-500 focus:border-indigo-500 block pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
-                    onChange={e => props.inputFunction(e.target.value)}
-                />
+        <>
+            <h1 className="text-2xl font-bold font-lato text-center">
+                {props.largeText}
+            </h1>
+            <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
+            <div>
+                <div className="mt-1 relative rounded-md shadow-sm pt-3">
+                    <input
+                        type="tel"
+                        value={props.value}
+                        className="focus:ring-indigo-500 focus:border-indigo-500 block pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
+                        onChange={e => props.inputFunction(e.target.value)}
+                    />
+                </div>
+
+                <div className="flex space-x-2 justify-center pt-4">
+                    <button
+                        type="submit"
+                        className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={props.screenFunction}
+                    >Submit</button>
+                </div>
             </div>
 
-            <div className="flex space-x-2 justify-center pt-4">
-                <button
-                    type="submit"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={props.screenFunction}
-                >Submit</button>
-            </div>
-        </div>
-
-    </>
+        </>
     )
 
 }
@@ -44,114 +41,94 @@ const Prompt = (props) => {
 const YearPrompt = (props) => {
 
     return (
+        <>
+            <h1 className="text-2xl font-bold font-lato text-center">
+                {props.largeText}
+            </h1>
+            <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
+            <div className="flex space-x-2 justify-center pt-4">
+                <button
+                    type="submit"
+                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={props.screenFunction("Freshman")}
+                >Freshman</button>
+            </div>
+            <div className="flex space-x-2 justify-center pt-4">
+                <button
+                    type="submit"
+                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={props.screenFunction("Sophomore")}
+                >Sophomore</button>
+            </div>
+            <div className="flex space-x-2 justify-center pt-4">
+                <button
+                    type="submit"
+                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={props.screenFunction("Junior")}
+                >Junior</button>
+            </div>
+            <div className="flex space-x-2 justify-center pt-4">
+                <button
+                    type="submit"
+                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={props.screenFunction("Senior")}
+                >Senior</button>
+            </div>
+            <div className="flex space-x-2 justify-center pt-4">
+                <button
+                    type="submit"
+                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={props.screenFunction("Graduate")}
+                >Graduate</button>
+            </div>
+        </>
+    )
+
+}
+
+const ConfirmationScreen = (props) => {
+
+    writeNewUser(phoneNumber, firstName, lastName, bigFam)
+
+    return (
     <>
+        <div>
+            <CheckCircleIcon className='h-full w-full text-blue-400'></CheckCircleIcon>
+        </div>
         <h1 className="text-2xl font-bold font-lato text-center">
             {props.largeText}
         </h1>
         <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
-        <div className=''>
-            <DropdownMenu/>
+        <div>
             <div className="flex space-x-2 justify-center pt-4">
                 <button
                     type="submit"
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
                     onClick={props.screenFunction}
-                >Submit</button>
+                >Go to Homepage</button>
             </div>
         </div>
-
-    </>
+        </>
     )
 
 }
 
-const DropdownMenu = () => {
-
-    function classNames(...classes) {
-        return classes.filter(Boolean).join(' ')
-    }
-
-    return (
-        <Menu as="div" className="relative inline-block text-left">
-          <div>
-            <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-              Options
-              <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
-            </Menu.Button>
-          </div>
-    
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={classNames(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      Account settings
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={classNames(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      Support
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={classNames(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      License
-                    </a>
-                  )}
-                </Menu.Item>
-                <form method="POST" action="#">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        type="submit"
-                        className={classNames(
-                          active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                          'block w-full px-4 py-2 text-left text-sm'
-                        )}
-                      >
-                        Sign out
-                      </button>
-                    )}
-                  </Menu.Item>
-                </form>
-              </div>
-            </Menu.Items>
-          </Transition>
-        </Menu>
-      )
-}
-
+function writeNewUser(phoneNumber, firstName, lastName, bigFam, year) {
+    const db = getDatabase();
+    set(ref(db, 'users/' + phoneNumber), {
+      userId: phoneNumber,
+      firstName: firstName,
+      lastName : lastName,
+      year: year,
+      bigFam: bigFam,
+      points: {
+        culture: 0,
+        community: 0,
+        sports: 0 ,
+        dance: 0,
+      }
+    });
+  }
 
 export default function CreateNewUser() {
     const [firstName, setFirstName] = useState("")
@@ -159,6 +136,8 @@ export default function CreateNewUser() {
     const [year, setYear] = useState("")
     const [bigFam, setBigFam] = useState("")
     const [screen, setScreen] = useState(1)
+    const { phoneNumber } = router.query;
+    const router = useRouter();
 
     return (
 
@@ -174,64 +153,78 @@ export default function CreateNewUser() {
             </Head>
             <main className={styles.main}>
 
-            {screen == 1 ?
-            
-            <Prompt 
-                largeText="You're verfied! Now let's get to know you better."
-                smallText="What's your first name?"
-                value={firstName}
-                inputFunction={setFirstName}
-                screenFunction={() => setScreen(2)}
-            />
+                {screen == 1 ?
 
-            : null
-            
-            }
+                    <Prompt
+                        largeText="You're verified! Now let's get to know you better."
+                        smallText="What's your first name?"
+                        value={firstName}
+                        inputFunction={setFirstName}
+                        screenFunction={() => setScreen(2)}
+                    />
 
-            {screen == 2 ?
+                    : null
 
-            <Prompt 
-                largeText={`Hi, ${firstName}!`}
-                smallText="What's your last name?"
-                value={lastName}
-                inputFunction={setLastName}
-                screenFunction={() => setScreen(3)}
-            />
+                }
 
-            : null
-            
-            }
+                {screen == 2 ?
 
-            {screen == 3 ?
+                    <Prompt
+                        largeText={`Hi, ${firstName}!`}
+                        smallText="What's your last name?"
+                        value={lastName}
+                        inputFunction={setLastName}
+                        screenFunction={() => setScreen(3)}
+                    />
 
-            <YearPrompt 
-                largeText={`Got it. Next question:`}
-                smallText={`What year are you in?`}
-                value={year}
-                inputFunction={setYear}
-                screenFunction={() => setScreen(3)}
-            />
+                    : null
 
-            : null
-            
-            }
+                }
 
-                
+                {screen == 3 ?
+
+                    <YearPrompt
+                        largeText={`Got it. Next question:`}
+                        smallText={`What year are you in?`}
+                        value={year}
+                        inputFunction={setYear}
+                        screenFunction={() => setScreen(4)}
+                    />
+
+                    : null
+
+                }
+
+                {screen == 4 ?
+
+                    <Prompt
+                        largeText={`Ok, last question.`}
+                        smallText="What big fam are you in?"
+                        value={bigFam}
+                        inputFunction={setBigFam}
+                        screenFunction={() => {
+                            writeNewUser(phoneNumber, firstName, lastName, bigFam, year)
+                            setScreen(5)
+                        }}
+                    />
+
+                    : null
+
+                }
+
+                {screen == 5 ?
+
+                    <ConfirmationScreen
+                        largeText={`You're in!`}
+                        smallText="You're registered for the 2023 Fall Semester!"
+                        screenFunction={() => router.push('/Homepage')}
+                    />
+
+                    : null
+
+                }
 
             </main>
-
-            <footer className={styles.footer}>
-                <a
-                    href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Powered by{' '}
-                    <span className={styles.logo}>
-                        <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-                    </span>
-                </a>
-            </footer>
         </div>
     )
 
