@@ -4,7 +4,7 @@ import styles from '../styles/Home.module.css'
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 import { authentication } from '../firebase/clientApp.ts'
 import React, { useState } from 'react';
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, get } from "firebase/database";
 import { Router, useRouter } from 'next/router'
 
 export default function Login() {
@@ -48,12 +48,14 @@ export default function Login() {
 
       confirmationResult.confirm(otp).then((result) => {
         // User signed in successfully.
-        const user = result.user;
-
-        if(user) {
-          router.push('/Homepage')
-        } else {
-          router.push(`/createNewUser?phoneNumber=${phoneNumber}`)
+        try {
+          const user = result.user;
+          const userExists = user ? true : false;
+    
+          checkUserExistence(userExists);
+        } catch (error) {
+          // Handle any errors that occur during the verification process
+          console.error(error);
         }
         // ...
       }).catch((error) => {
@@ -62,6 +64,39 @@ export default function Login() {
       });
 
     }
+  }
+
+  // NOTE: FOR LATER USE
+  const checkUserExistence = (userExists) => {
+    // Assuming you have a "users" collection in your Firebase Realtime Database
+    const database = getDatabase();
+    const usersRef = ref(database, 'users');
+
+    get(usersRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        const phoneNumberExists = Object.values(userData).some(user => user.phoneNumber === phoneNumber);
+
+        if (phoneNumberExists) {
+          // User exists, redirect to the homepage
+          router.push('/Homepage');
+        } else {
+          // User doesn't exist, redirect to the sign-up page
+          router.push({
+            pathname: '/createNewUser',
+            query: { phoneNumber: phoneNumber }
+        }, '/createNewUser');
+        }
+      } else {
+        // User doesn't exist, redirect to the sign-up page
+        router.push({
+          pathname: '/createNewUser',
+          query: { phoneNumber: phoneNumber }
+      }, '/createNewUser');
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   return (

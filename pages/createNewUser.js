@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
 import { CheckCircleIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router';
@@ -29,7 +29,7 @@ const Prompt = (props) => {
                         type="submit"
                         className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={props.screenFunction}
-                    >Submit</button>
+                    >Next</button>
                 </div>
             </div>
 
@@ -48,38 +48,49 @@ const YearPrompt = (props) => {
             <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
             <div className="flex space-x-2 justify-center pt-4">
                 <button
-                    type="submit"
+                    type="button"
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={props.screenFunction("Freshman")}
+                    onClick={() => {
+                        console.log("Logging freshman.")
+                        props.inputFunction("Freshman");
+                    }}
                 >Freshman</button>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
                 <button
-                    type="submit"
+                    type="button"
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={props.screenFunction("Sophomore")}
+                    onClick={() => {
+                        props.inputFunction("Sophomore");
+                    }}                
                 >Sophomore</button>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
                 <button
-                    type="submit"
+                    type="button"
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={props.screenFunction("Junior")}
+                    onClick={() => {
+                        props.inputFunction("Junior");
+                        }}                
                 >Junior</button>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
                 <button
-                    type="submit"
+                    type="button"
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={props.screenFunction("Senior")}
+                    onClick={() => {
+                        props.inputFunction("Senior");
+                        }}              
                 >Senior</button>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
                 <button
                     type="submit"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={props.screenFunction("Graduate")}
-                >Graduate</button>
+                    className="inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md"
+                    onClick={() => {
+                        props.screenFunction();
+                    }}              
+                >Next</button>
             </div>
         </>
     )
@@ -88,12 +99,10 @@ const YearPrompt = (props) => {
 
 const ConfirmationScreen = (props) => {
 
-    writeNewUser(phoneNumber, firstName, lastName, bigFam)
-
     return (
     <>
         <div>
-            <CheckCircleIcon className='h-full w-full text-blue-400'></CheckCircleIcon>
+            <CheckCircleIcon className='h-full w-full text-green-400'></CheckCircleIcon>
         </div>
         <h1 className="text-2xl font-bold font-lato text-center">
             {props.largeText}
@@ -130,14 +139,19 @@ function writeNewUser(phoneNumber, firstName, lastName, bigFam, year) {
     });
   }
 
-export default function CreateNewUser() {
+export default function CreateNewUser(props) {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [year, setYear] = useState("")
     const [bigFam, setBigFam] = useState("")
     const [screen, setScreen] = useState(1)
-    const { phoneNumber } = router.query;
     const router = useRouter();
+    const [phoneNumber, setPhoneNumber] = useState("");
+
+    useEffect(() => {
+        setPhoneNumber(router.query.phoneNumber);
+        console.log(phoneNumber);
+    }, [router.query])
 
     return (
 
