@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
+import { RecaptchaVerifier, signInWithPhoneNumber,onAuthStateChanged } from "firebase/auth"
 import { authentication } from '../firebase/clientApp.ts'
 import React, { useState } from 'react';
 import { getDatabase, ref, set, get } from "firebase/database";
@@ -23,6 +23,16 @@ export default function Login() {
       }
     }, authentication);
   }
+
+  // onAuthStateChanged(authentication, (user) => {
+  //   if (user) {
+  //     // User is signed in, see docs for a list of available properties
+  //     // https://firebase.google.com/docs/reference/js/auth.user
+  //     const uid = user.uid;
+  //     // ...
+  //     router.push('/Homepage');
+  //   }
+  // });
   
 
   const requestOTP = (e) => {
@@ -84,14 +94,18 @@ export default function Login() {
           // User doesn't exist, redirect to the sign-up page
           router.push({
             pathname: '/createNewUser',
-            query: { phoneNumber: phoneNumber }
+            query: { 
+              phoneNumber: phoneNumber 
+            }
         }, '/createNewUser');
         }
       } else {
         // User doesn't exist, redirect to the sign-up page
         router.push({
           pathname: '/createNewUser',
-          query: { phoneNumber: phoneNumber }
+          query: { 
+            phoneNumber: phoneNumber 
+          }
       }, '/createNewUser');
       }
     }).catch((error) => {

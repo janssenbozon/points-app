@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
 import { CheckCircleIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router';
+import { authentication } from '../firebase/clientApp.ts';
 
 const Prompt = (props) => {
 
@@ -122,10 +123,11 @@ const ConfirmationScreen = (props) => {
 
 }
 
-function writeNewUser(phoneNumber, firstName, lastName, bigFam, year) {
+function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
     const db = getDatabase();
-    set(ref(db, 'users/' + phoneNumber), {
-      userId: phoneNumber,
+    set(ref(db, 'users/' + uid), {
+      uid: uid,
+      phoneNumber: phoneNumber,
       firstName: firstName,
       lastName : lastName,
       year: year,
@@ -135,6 +137,7 @@ function writeNewUser(phoneNumber, firstName, lastName, bigFam, year) {
         community: 0,
         sports: 0 ,
         dance: 0,
+        total: 0,
       }
     });
   }
@@ -147,10 +150,10 @@ export default function CreateNewUser(props) {
     const [screen, setScreen] = useState(1)
     const router = useRouter();
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [uid, setUid] = useState("")
 
     useEffect(() => {
         setPhoneNumber(router.query.phoneNumber);
-        console.log(phoneNumber);
     }, [router.query])
 
     return (
@@ -217,7 +220,8 @@ export default function CreateNewUser(props) {
                         value={bigFam}
                         inputFunction={setBigFam}
                         screenFunction={() => {
-                            writeNewUser(phoneNumber, firstName, lastName, bigFam, year)
+                            const uid = authentication.currentUser.uid;
+                            writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year)
                             setScreen(5)
                         }}
                     />
