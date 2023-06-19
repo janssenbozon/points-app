@@ -13,46 +13,53 @@ export default function Login() {
   const [showCodeScreen, setShowCodeScreen] = useState(true)
 
   // EVENT SPECIFIC DATA- LOADED AFTER CODE IS ENTERED
-  const [start, setStart] = useState(new Date())
-  const [end, setEnd] = useState(new Date())
-  const [name, setName] = useState("")
-  const [category, setCategory] = useState("")
-  const [points, setPoints] = useState(0)
+  const [event, setEvent] = useState(null);
 
   function fetchEventData(id) {
-
-    console.log("Ref = events/" + id)
-
-    const eventRef = ref(database, 'events/' + id);
-
-    get(eventRef).then((snapshot) => {
-      const eventData = snapshot.val();
-
-      console.log(eventData)
-      setStart(new Date(eventData.start));
-      setEnd(new Date(eventData.end));
-      setName(eventData.name);
-      setCategory(eventData.category);
-      setPoints(eventData.points);
+    return new Promise((resolve, reject) => {
+      console.log("Ref = events/" + id);
+  
+      const eventRef = ref(database, 'events/' + id);
+  
+      get(eventRef)
+        .then((snapshot) => {
+          const eventData = snapshot.val();
+          console.log(eventData);
+          setEvent(eventData);
+          resolve(eventData);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch event data:', error);
+          reject(error); // Reject the promise if an error occurs
+        });
     });
   }
 
-  function checkTime() {
+  async function checkTime(eventData) {
+
+    console.log("event = " + eventData)
+
     const currentDate = new Date();
-    const startTime = start.getTime();
-    const endTime = end.getTime();
+    const startDate = new Date(eventData.start);
+    const endDate = new Date(eventData.end);
+    const startTime = startDate.getTime();
+    const endTime = endDate.getTime();
     const currentTime = currentDate.getTime();
+
+    // print times
+    console.log("Start time: " + startDate);
+    console.log("End time: " + endDate);
+    console.log("Current time: " + currentDate);
   
     if (currentTime >= startTime && currentTime <= endTime) {
       console.log("Time correct!");
-      return true
+      setShowCodeScreen(false)
+      setShowConfirmation(true)
     } else {
-      console.log('Not the correct time to check in.');
-      console.log('currentTime = ' + currentTime);
-      console.log('startTime = ' + startTime);
-      console.log('endTime = ' + endTime);
+      console.log('3 Not the correct time to check in.');
       return false
     }
+
   }
 
   function checkIn() {
@@ -109,14 +116,9 @@ export default function Login() {
               <button
                 type="submit"
                 className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                onClick={() => {
-                  fetchEventData(id)
-                  if(checkTime()) {
-                    showCodeScreen(false)
-                    showConfirmation(true)
-                  } else {
-
-                  }
+                onClick={async() => {
+                  const eventData = await fetchEventData(id);
+                  checkTime(eventData);
                 }}
               >Check In</button>
             </div>
