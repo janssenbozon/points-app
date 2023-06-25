@@ -4,15 +4,17 @@ import styles from '../styles/Home.module.css'
 import { RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, getAuth } from "firebase/auth"
 import { authentication, database } from '../firebase/clientApp.ts'
 import React, { useState, useEffect } from 'react';
-import { getDatabase, ref, set, get, onValue } from "firebase/database";
+import { getDatabase, ref, set, get, onValue, push, update } from "firebase/database";
 import { Router, useRouter } from 'next/router'
 
 export default function Login() {
 
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [showCodeScreen, setShowCodeScreen] = useState(true)
+  const [showCheckedIn, setShowCheckedIn] = useState(false)
 
   // EVENT SPECIFIC DATA- LOADED AFTER CODE IS ENTERED
+  const [eventID, setEventID] = useState(null)
   const [event, setEvent] = useState(null);
 
   function fetchEventData(id) {
@@ -53,8 +55,7 @@ export default function Login() {
   
     if (currentTime >= startTime && currentTime <= endTime) {
       console.log("Time correct!");
-      setShowCodeScreen(false)
-      setShowConfirmation(true)
+      return true
     } else {
       console.log('3 Not the correct time to check in.');
       return false
@@ -62,27 +63,37 @@ export default function Login() {
 
   }
 
+
+  // Add the user to the guest list and update their checked-in status
   function checkIn() {
 
-    // IN EVENTS
-    const guestListRef = ref(database, 'events/' + id + '/guestList')
+    console.log("Checking in user to path " + 'events/' + eventID + '/guestList/');
 
-    guestListRef.push().set(authentication.currentUser.uid)
-      .then(() => {
-        console.log('User is added to guest list!')
-      })
-      .catch((error) => {
-        console.error('Failed to add user to the guest list:', error);
-      });
+    const uid = authentication.currentUser.uid;
+
+    // TODO: Check if user is already checked in, if user's event id is 000000 they are not checked in.
+
+    // IN EVENTS
+    const guestListRef = ref(database, 'events/' + eventID + '/guestList/');
+
+    // push the user's uid to the guest list
+    const key = push(guestListRef, authentication.currentUser.uid).key;
+
+    console.log("Added user to guest list with key " + key);
+    console.log("Updating user's checked-in status...");
       
     // IN USERS
     const userRef = ref(database, 'users/' + authentication.currentUser.uid);
 
-    userRef.update({
-      eventId: id
-    })
+    const updates = {};
+
+    updates['/users/' + uid + '/eventId'] = eventID;
+    updates['/users/' + uid + '/eventRef'] = key;
+
+    // update the user's checked-in status
+    update(ref(database), updates)
       .then(() => {
-        console.log('User status checkd to checked in!')
+        console.log('User status changed to checked in!')
       })
       .catch((error) => {
         console.error('Failed to update user\'s checked-in status:', error);
@@ -118,7 +129,13 @@ export default function Login() {
                 className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
                 onClick={async() => {
                   const eventData = await fetchEventData(id);
-                  checkTime(eventData);
+                  if(checkTime(eventData)) {
+                    setEventID(id)
+                    setShowCodeScreen(false)
+                    setShowConfirmation(true)
+                  } else {
+                    // TODO: display error message
+                  }
                 }}
               >Check In</button>
             </div>
@@ -127,6 +144,7 @@ export default function Login() {
     )
   }
 
+  // Confirmation screen: displays the event name and points gained, asks user to confirm their check-in
   const ConfirmationScreen = () => {
     return (
       <>
@@ -135,9 +153,9 @@ export default function Login() {
         </h1>
 
         <h1 className="text-2xl text-lime-500 font-bold font-lato text-center">
-          {name}
+          {event.name}
         </h1>
-        <h2 className='text-md font-bold font-lato text-center'>You gain {points} {category} points from this.</h2>
+        <h2 className='text-md font-bold font-lato text-center'>You gain {event.points} {event.category} points from this.</h2>
         <div>
           <div className="flex space-x-2 justify-center pt-4">
             <button
@@ -146,6 +164,7 @@ export default function Login() {
               onClick={() => {
                 setShowConfirmation(true);
                 setShowCodeScreen(false);
+                checkIn();
               }}
             >Continue</button>
             <button

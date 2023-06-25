@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { RecaptchaVerifier, signInWithPhoneNumber,onAuthStateChanged } from "firebase/auth"
+import { RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "firebase/auth"
 import { authentication } from '../firebase/clientApp.ts'
 import React, { useState } from 'react';
-import { getDatabase, ref, set, get } from "firebase/database";
-import { Router, useRouter } from 'next/router'
+import { getDatabase, ref, get } from "firebase/database";
+import { useRouter } from 'next/router'
 
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("")
@@ -14,6 +14,7 @@ export default function Login() {
   const [otp, setOTP] = useState("")
   const router = useRouter()
 
+  // Generate reCAPTCHA for phone number verification
   const generateRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
       'size': 'invisible',
@@ -24,6 +25,7 @@ export default function Login() {
     }, authentication);
   }
 
+  // If signed in already, redirect to homepage
   // onAuthStateChanged(authentication, (user) => {
   //   if (user) {
   //     // User is signed in, see docs for a list of available properties
@@ -35,6 +37,7 @@ export default function Login() {
   // });
   
 
+  // Request OTP using phone number
   const requestOTP = (e) => {
     console.log("Requesting OTP for phone number: " + phoneNumber)
     generateRecaptcha();
@@ -45,11 +48,12 @@ export default function Login() {
       setCodeInputShown(true)
       window.confirmationResult = confirmationResult;
     }).catch((error) => {
-      // error - sms not sent
+      // TODO: Handle error
       console.log(error)
     });
   }
 
+  // Verify OTP
   const verifyOTP = () => {
 
     if(otp.length === 6) {
@@ -61,24 +65,22 @@ export default function Login() {
         try {
           const user = result.user;
           const userExists = user ? true : false;
-    
           checkUserExistence(userExists);
         } catch (error) {
-          // Handle any errors that occur during the verification process
+          // TODO: Handle any errors that occur during the verification process
           console.error(error);
         }
-        // ...
       }).catch((error) => {
-        // User couldn't sign in (bad verification code?)
-        // ...
+        // TODO: Handle error
       });
 
     }
   }
 
-  // NOTE: FOR LATER USE
+  // Checks if the user exists in the real time database via their phone number
+  // TODO: Change this to check using a UID instead of phone number
   const checkUserExistence = (userExists) => {
-    // Assuming you have a "users" collection in your Firebase Realtime Database
+
     const database = getDatabase();
     const usersRef = ref(database, 'users');
 
@@ -109,10 +111,12 @@ export default function Login() {
       }, '/createNewUser');
       }
     }).catch((error) => {
+      // TODO: Handle error
       console.log(error);
     });
   }
 
+  // TODO: Break down into components
   return (
   
     <div className={styles.container}>

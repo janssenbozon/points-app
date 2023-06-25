@@ -7,6 +7,7 @@ import { CheckCircleIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router';
 import { authentication } from '../firebase/clientApp.ts';
 
+// Prompt template for text input
 const Prompt = (props) => {
 
     return (
@@ -39,6 +40,7 @@ const Prompt = (props) => {
 
 }
 
+// Prompt template for year input, requires multiple buttons so I had to make a separate component
 const YearPrompt = (props) => {
 
     return (
@@ -98,6 +100,7 @@ const YearPrompt = (props) => {
 
 }
 
+// Confirmation screen template
 const ConfirmationScreen = (props) => {
 
     return (
@@ -152,6 +155,7 @@ export default function CreateNewUser(props) {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [uid, setUid] = useState("")
 
+    // get the phone number from the URL
     useEffect(() => {
         setPhoneNumber(router.query.phoneNumber);
     }, [router.query])
