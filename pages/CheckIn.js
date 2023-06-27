@@ -12,6 +12,7 @@ export default function Login() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [showCodeScreen, setShowCodeScreen] = useState(true)
   const [showCheckedIn, setShowCheckedIn] = useState(false)
+  const router = useRouter();
 
   // EVENT SPECIFIC DATA- LOADED AFTER CODE IS ENTERED
   const [eventID, setEventID] = useState(null)
@@ -89,6 +90,7 @@ export default function Login() {
 
     updates['/users/' + uid + '/eventId'] = eventID;
     updates['/users/' + uid + '/eventRef'] = key;
+    updates['/users/' + uid + '/eventName'] = event.name;
 
     // update the user's checked-in status
     update(ref(database), updates)
@@ -162,17 +164,17 @@ export default function Login() {
               type="submit"
               className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
               onClick={() => {
-                setShowConfirmation(true);
+                setShowConfirmation(false);
                 setShowCodeScreen(false);
                 checkIn();
+                setShowCheckedIn(true);
               }}
             >Continue</button>
             <button
               type="submit"
               className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
               onClick={() => {
-                setShowConfirmation(true);
-                setShowCodeScreen(false);
+                router.push('/Homepage');
               }}
             >Return Home</button>
           </div>
@@ -180,6 +182,30 @@ export default function Login() {
       </>
     )
   }
+
+  // Checked in screen: alerts the user that the check in process is complete
+  const CheckedInScreen = () => {
+    return (
+      <>
+        <h1 className="text-2xl font-bold font-lato text-center">
+          Success!
+        </h1>
+        <h2 className='text-md font-bold font-lato text-center'>You're checked in.</h2>
+        <div>
+          <div className="flex space-x-2 justify-center pt-4">
+            <button
+              type="submit"
+              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+              onClick={() => {
+                router.push('/Homepage')
+              }}
+            >Return Home</button>
+          </div>
+        </div>
+      </>
+    )
+  }
+
 
   return (
 
@@ -198,6 +224,8 @@ export default function Login() {
         { showCodeScreen ? <CodeScreen/> : null}
 
         { showConfirmation ? <ConfirmationScreen/> : null}
+
+        { showCheckedIn ? <CheckedInScreen/> : null}
 
         <div id='recaptcha-container'></div>
 
