@@ -6,10 +6,18 @@ import { authentication } from '../firebase/clientApp.ts';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../firebase/clientApp.ts';
 import { useRouter } from 'next/router'
+import { useAuth } from '../hooks/useAuth'
 
 export default function Homepage() {
 
-    const userUID = authentication.currentUser.uid;
+    const auth = useAuth();
+    const user = auth.user;
+    const userUID = user ? user.uid : null;
+
+    if (!userUID) {
+        return <p>Loading...</p>; //TODO: Add loading screen
+    }
+    console.log(user);
 
     const [culturePoints, setCulturePoints] = useState(0);
     const [sportsPoints, setSportsPoints] = useState(0);
@@ -20,21 +28,45 @@ export default function Homepage() {
     const [lastName, setLastName] = useState("");
     const [currentEvent, setCurrentEvent] = useState("");
     const router = useRouter();
-
+    
     useEffect(() => {
-        const userRef = ref(database, 'users/' + userUID);
-        onValue(userRef, (snapshot) => {
-            const data = snapshot.val();
-            console.log(data);
-            setFirstName(data.firstName);
-            setLastName(data.lastName);
-            setCommunityPoints(data.points.community)
-            setSportsPoints(data.points.sports)
-            setCulturePoints(data.points.culture)
-            setCurrentEvent(data.eventName)
-            setDancePoints(data.points.dance)
-            setTotalPoints(data.points.total)
-        });
+
+        console.log("Loading user data");
+
+        const updateData = async () => {
+            try {
+                console.log("Updating user data");
+                await auth.updateUser();
+                console.log(user);
+                console.log(user.firstName);
+                console.log(user.lastName);
+                console.log(user.points.sports);
+                setFirstName(user.firstName);
+                setLastName(user.lastName);
+                setCommunityPoints(user.points.community);
+                setSportsPoints(user.points.sports);
+                setCulturePoints(user.points.culture);
+                setCurrentEvent(user.eventName);
+                setDancePoints(user.points.dance);
+                setTotalPoints(
+                    user.points.community +
+                    user.points.sports +
+                    user.points.culture +
+                    user.points.dance
+                );
+                console.log("User data updated");
+            } catch (error) {
+                alert("Error updating user data");
+            }
+        }
+
+        updateData();
+
+        return () => {
+            console.log(user)
+            console.log("unmounting");
+        }
+
     }, []);
 
     const ProgressBar = (props) => {
@@ -85,10 +117,29 @@ export default function Homepage() {
             <>
                 <h1 className='text-4xl font-bold font-lato'>You're checked into {currentEvent}</h1>
                 <div className="container mx-auto pt-3">
-                    <button type="button" 
-                    className="w-full px-6 py-2.5 bg-green-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => router.push("/CheckOut")}
+                    <button type="button"
+                        className="w-full px-6 py-2.5 bg-green-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => router.push("/CheckOut")}
                     >Check-out</button>
+                </div>
+            </>
+        )
+    }
+
+    const SignOutButton = () => {
+        return (
+            <>
+                <div className="container mx-auto pt-3">
+                    <button type="button"
+                        className="w-full px-6 py-2.5 bg-red-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => {
+                            auth.signout().then(() => {
+                                router.push("/Login")
+                            }).catch(() => {
+                                alert("Error signing out")
+                            });
+                        }}
+                    >Sign-out</button>
                 </div>
             </>
         )
@@ -100,7 +151,7 @@ export default function Homepage() {
             <main className={styles.main}>
                 <div className='container'>
                     <p className='text-xl font-bold font-lato'>Hi, {firstName}!</p>
-                    { currentEvent == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
+                    {currentEvent == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
                 </div>
 
 
@@ -109,7 +160,7 @@ export default function Homepage() {
                     <div class="w-full overflow-hidden rounded-2xl shadow-lg bg-gray-200">
                         <div class="px-4 py-3">
                             <h1 className='text-2xl font-bold font-lato pb-2'>Goodphil 2023!</h1>
-                            <progress className="progress progress-info w-full h-6" value={totalPoints} max="100"></progress>
+                            <progress className="progress progress-info w-full h-6" value={totalPoints} max="9"></progress>
                             <ProgressBar
                                 category="Culture"
                                 points={culturePoints}
@@ -133,7 +184,7 @@ export default function Homepage() {
                         </div>
                     </div>
                 </div>
-                <MemberID />
+                <SignOutButton />
             </main>
         </div>
     )

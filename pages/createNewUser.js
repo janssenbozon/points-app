@@ -6,6 +6,7 @@ import { getDatabase, ref, set } from "firebase/database";
 import { CheckCircleIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router';
 import { authentication } from '../firebase/clientApp.ts';
+import { useAuth } from '../hooks/useAuth'
 
 // Prompt template for text input
 const Prompt = (props) => {
@@ -65,7 +66,7 @@ const YearPrompt = (props) => {
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
                     onClick={() => {
                         props.inputFunction("Sophomore");
-                    }}                
+                    }}
                 >Sophomore</button>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
@@ -74,7 +75,7 @@ const YearPrompt = (props) => {
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
                     onClick={() => {
                         props.inputFunction("Junior");
-                        }}                
+                    }}
                 >Junior</button>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
@@ -83,7 +84,7 @@ const YearPrompt = (props) => {
                     className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
                     onClick={() => {
                         props.inputFunction("Senior");
-                        }}              
+                    }}
                 >Senior</button>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
@@ -92,7 +93,7 @@ const YearPrompt = (props) => {
                     className="inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md"
                     onClick={() => {
                         props.screenFunction();
-                    }}              
+                    }}
                 >Next</button>
             </div>
         </>
@@ -104,46 +105,55 @@ const YearPrompt = (props) => {
 const ConfirmationScreen = (props) => {
 
     return (
-    <>
-        <div>
-            <CheckCircleIcon className='h-full w-full text-green-400'></CheckCircleIcon>
-        </div>
-        <h1 className="text-2xl font-bold font-lato text-center">
-            {props.largeText}
-        </h1>
-        <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
-        <div>
-            <div className="flex space-x-2 justify-center pt-4">
-                <button
-                    type="submit"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={props.screenFunction}
-                >Go to Homepage</button>
+        <>
+            <div>
+                <CheckCircleIcon className='h-full w-full text-green-400'></CheckCircleIcon>
             </div>
-        </div>
+            <h1 className="text-2xl font-bold font-lato text-center">
+                {props.largeText}
+            </h1>
+            <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
+            <div>
+                <div className="flex space-x-2 justify-center pt-4">
+                    <button
+                        type="submit"
+                        className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={props.screenFunction}
+                    >Go to Homepage</button>
+                </div>
+            </div>
         </>
     )
 
 }
 
 function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
-    const db = getDatabase();
-    set(ref(db, 'users/' + uid), {
-      uid: uid,
-      phoneNumber: phoneNumber,
-      firstName: firstName,
-      lastName : lastName,
-      year: year,
-      bigFam: bigFam,
-      points: {
-        culture: 0,
-        community: 0,
-        sports: 0 ,
-        dance: 0,
-        total: 0,
-      }
+    return new Promise((resolve, reject) => {
+        const db = getDatabase();
+        set(ref(db, 'users/' + uid), {
+            uid: uid,
+            phoneNumber: phoneNumber,
+            firstName: firstName,
+            lastName: lastName,
+            year: year,
+            bigFam: bigFam,
+            points: {
+                culture: 0,
+                community: 0,
+                sports: 0,
+                dance: 0,
+                total: 0,
+            },
+            eventId: "NOT CHECKED IN",
+            eventName: "NOT CHECKED IN",
+            eventRef: "NOT CHECKED IN",
+        }).then(() => {
+            resolve(true);
+        }).catch((error) => {
+            reject(error);
+        });
     });
-  }
+}
 
 export default function CreateNewUser(props) {
     const [firstName, setFirstName] = useState("")
@@ -152,6 +162,7 @@ export default function CreateNewUser(props) {
     const [bigFam, setBigFam] = useState("")
     const [screen, setScreen] = useState(1)
     const router = useRouter();
+    const auth = useAuth();
     const [phoneNumber, setPhoneNumber] = useState("");
     const [uid, setUid] = useState("")
 
@@ -223,10 +234,13 @@ export default function CreateNewUser(props) {
                         smallText="What big fam are you in?"
                         value={bigFam}
                         inputFunction={setBigFam}
-                        screenFunction={() => {
+                        screenFunction={async () => {
                             const uid = authentication.currentUser.uid;
-                            writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year)
-                            setScreen(5)
+                            if (await writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) && await auth.updateUser()) {
+                                setScreen(5)
+                            } else {
+                                alert("Something went wrong. Please try again.")
+                            }
                         }}
                     />
 
@@ -238,8 +252,12 @@ export default function CreateNewUser(props) {
 
                     <ConfirmationScreen
                         largeText={`You're in!`}
-                        smallText="You're registered for the 2023 Fall Semester!"
-                        screenFunction={() => router.push('/Homepage')}
+                        smallText="You're registered for the 23-24 school year."
+                        screenFunction={() => {
+                            console.log("Redirecting to home")
+                            router.push('/Homepage')
+                        }
+                        }
                     />
 
                     : null

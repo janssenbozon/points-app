@@ -21,9 +21,9 @@ export default function Login() {
   function fetchEventData(id) {
     return new Promise((resolve, reject) => {
       console.log("Ref = events/" + id);
-  
+
       const eventRef = ref(database, 'events/' + id);
-  
+
       get(eventRef)
         .then((snapshot) => {
           const eventData = snapshot.val();
@@ -53,7 +53,7 @@ export default function Login() {
     console.log("Start time: " + startDate);
     console.log("End time: " + endDate);
     console.log("Current time: " + currentDate);
-  
+
     if (currentTime >= startTime && currentTime <= endTime) {
       console.log("Time correct!");
       return true
@@ -67,40 +67,40 @@ export default function Login() {
 
   // Add the user to the guest list and update their checked-in status
   function checkIn() {
+    return new Promise((resolve, reject) => {
+      console.log("Checking in user to path " + 'events/' + eventID + '/guestList/');
 
-    console.log("Checking in user to path " + 'events/' + eventID + '/guestList/');
+      const uid = authentication.currentUser.uid;
 
-    const uid = authentication.currentUser.uid;
+      // TODO: Check if user is already checked in, if user's event id is 000000 they are not checked in.
 
-    // TODO: Check if user is already checked in, if user's event id is 000000 they are not checked in.
+      // IN EVENTS
+      const guestListRef = ref(database, 'events/' + eventID + '/guestList/');
 
-    // IN EVENTS
-    const guestListRef = ref(database, 'events/' + eventID + '/guestList/');
+      // push the user's uid to the guest list
+      const key = push(guestListRef, authentication.currentUser.uid).key;
 
-    // push the user's uid to the guest list
-    const key = push(guestListRef, authentication.currentUser.uid).key;
+      console.log("Added user to guest list with key " + key);
+      console.log("Updating user's checked-in status...");
 
-    console.log("Added user to guest list with key " + key);
-    console.log("Updating user's checked-in status...");
-      
-    // IN USERS
-    const userRef = ref(database, 'users/' + authentication.currentUser.uid);
+      // IN USERS    
+      const updates = {};
 
-    const updates = {};
+      updates['/users/' + uid + '/eventId'] = eventID;
+      updates['/users/' + uid + '/eventRef'] = key;
+      updates['/users/' + uid + '/eventName'] = event.name;
 
-    updates['/users/' + uid + '/eventId'] = eventID;
-    updates['/users/' + uid + '/eventRef'] = key;
-    updates['/users/' + uid + '/eventName'] = event.name;
-
-    // update the user's checked-in status
-    update(ref(database), updates)
-      .then(() => {
-        console.log('User status changed to checked in!')
-      })
-      .catch((error) => {
-        console.error('Failed to update user\'s checked-in status:', error);
-      });
-
+      // update the user's checked-in status
+      update(ref(database), updates)
+        .then(() => {
+          console.log('User status changed to checked in!');
+          resolve();
+        })
+        .catch((error) => {
+          console.error('Failed to update user\'s checked-in status:', error);
+          reject(error);
+        });
+    });
   }
 
   const CodeScreen = () => {
@@ -108,42 +108,47 @@ export default function Login() {
     const [id, setId] = useState("")
 
     return (
-        <>
-          <h1 className="text-2xl font-bold font-lato text-center">
-            Checking in?
-          </h1>
-          <h2 className='text-md font-bold font-lato text-center'>Enter the unique code for the event.</h2>
-          <div>
-            <div className="mt-1 relative rounded-md shadow-sm pt-3">
-              <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-center pointer-events-none" />
-              <input
-                type="tel"
-                value={id}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
-                placeholder="123456"
-                onChange={(e) => setId(e.target.value)}
-              />
-            </div>
-
-            <div className="flex space-x-2 justify-center pt-4">
-              <button
-                type="submit"
-                className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                onClick={async() => {
-                  const eventData = await fetchEventData(id);
-                  if(checkTime(eventData)) {
-                    setEventID(id)
-                    setShowCodeScreen(false)
-                    setShowConfirmation(true)
-                  } else {
-                    // TODO: display error message
-                  }
-                }}
-              >Check In</button>
-            </div>
+      <>
+        <h1 className="text-2xl font-bold font-lato text-center">
+          Checking in?
+        </h1>
+        <h2 className='text-md font-bold font-lato text-center'>Enter the unique code for the event.</h2>
+        <div>
+          <div className="mt-1 relative rounded-md shadow-sm pt-3">
+            <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-center pointer-events-none" />
+            <input
+              type="tel"
+              value={id}
+              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
+              placeholder="123456"
+              onChange={(e) => setId(e.target.value)}
+            />
           </div>
-        </>
+
+          <div className="flex space-x-2 justify-center pt-4">
+            <button
+              type="submit"
+              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+              onClick={async () => {
+                const eventData = await fetchEventData(id);
+                if (checkTime(eventData)) {
+                  setEventID(id)
+                  setShowCodeScreen(false)
+                  setShowConfirmation(true)
+                } else {
+                  // TODO: display error message
+                }
+              }}
+            >Check In</button>
+          </div>
+        </div>
+      </>
     )
+  }
+
+  const handleReturnHome = () => {
+
+    router.push('/Homepage');
   }
 
   // Confirmation screen: displays the event name and points gained, asks user to confirm their check-in
@@ -164,10 +169,11 @@ export default function Login() {
               type="submit"
               className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
               onClick={() => {
-                setShowConfirmation(false);
-                setShowCodeScreen(false);
-                checkIn();
-                setShowCheckedIn(true);
+                checkIn().then(() => {
+                  setShowConfirmation(false);
+                  setShowCodeScreen(false);
+                  setShowCheckedIn(true);
+                })
               }}
             >Continue</button>
             <button
@@ -221,11 +227,11 @@ export default function Login() {
       </Head>
       <main className={styles.main}>
 
-        { showCodeScreen ? <CodeScreen/> : null}
+        {showCodeScreen ? <CodeScreen /> : null}
 
-        { showConfirmation ? <ConfirmationScreen/> : null}
+        {showConfirmation ? <ConfirmationScreen /> : null}
 
-        { showCheckedIn ? <CheckedInScreen/> : null}
+        {showCheckedIn ? <CheckedInScreen /> : null}
 
         <div id='recaptcha-container'></div>
 
