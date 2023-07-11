@@ -48,6 +48,9 @@ export default function Login() {
   };
 
   const handlePhoneInput = async () => {
+
+    console.log("Phone number: " + phoneNumber)
+
     try {
       if (phoneNumber.length != 10) {
         setIncorrectPhoneNumber(true);
