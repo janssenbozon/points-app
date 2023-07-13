@@ -92,9 +92,9 @@ export default function Login() {
         return (
             <>
                 <h1 className="text-2xl font-bold font-lato text-center">
-                    You're checking out of {event.name}.
+                    You&apos;re checking out of {event.name}.
                 </h1>
-                <h2 className='text-md font-bold font-lato text-center'>You'll gain {event.points} {event.category} points from this event.</h2>
+                <h2 className='text-md font-bold font-lato text-center'>You&apos;ll gain {event.points} {event.category} points from this event.</h2>
                 <div>
                     <div className="flex space-x-2 justify-center pt-4">
                         <button
@@ -117,7 +117,7 @@ export default function Login() {
         return (
             <>
                 <h1 className="text-2xl font-bold font-lato text-center">
-                    You're checked out!
+                    You&apos;re checked out!
                 </h1>
                 <div>
                     <div className="flex space-x-2 justify-center pt-4">

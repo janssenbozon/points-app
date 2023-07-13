@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'
-import Login from '../pages/login';
+import Login from '../pages/Login';
 import { act } from 'react-dom/test-utils';
 import { useAuth } from '../hooks/useAuth';
 

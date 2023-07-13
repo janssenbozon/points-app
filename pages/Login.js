@@ -16,9 +16,9 @@ export default function Login() {
   const auth = useAuth()
   const router = useRouter()
 
-  useEffect(() => {
-    auth.generateRecaptcha(); // Initialize reCAPTCHA on component mount
-  }, []);
+  // useEffect(() => {
+    
+  // }, []);
 
   const handleVerification = async () => {
     setIncorrectCode(false);
@@ -48,6 +48,8 @@ export default function Login() {
   };
 
   const handlePhoneInput = async () => {
+
+    auth.generateRecaptcha(); // Initialize reCAPTCHA on component mount
 
     console.log("Phone number: " + phoneNumber)
 
@@ -104,7 +106,7 @@ export default function Login() {
                 <input
                   type="tel"
                   value={phoneNumber}
-                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
+                  className="focus:ring-indigo-500 block w-full pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
                   placeholder="(000) 000 - 0000"
                   onChange={e => setPhoneNumber(e.target.value)}
                 />
@@ -159,19 +161,6 @@ export default function Login() {
         }
 
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 

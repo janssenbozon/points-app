@@ -12,6 +12,8 @@ export default function Login() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [showCodeScreen, setShowCodeScreen] = useState(true)
   const [showCheckedIn, setShowCheckedIn] = useState(false)
+  const [invalidCode, setInvalidCode] = useState(false)
+  const [invalidTime, setInvalidTime] = useState(false)
   const router = useRouter();
 
   // EVENT SPECIFIC DATA- LOADED AFTER CODE IS ENTERED
@@ -32,8 +34,8 @@ export default function Login() {
           resolve(eventData);
         })
         .catch((error) => {
-          console.error('Failed to fetch event data:', error);
-          reject(error); // Reject the promise if an error occurs
+          console.log("Error fetching event data:")
+          resolve(false);
         });
     });
   }
@@ -58,7 +60,7 @@ export default function Login() {
       console.log("Time correct!");
       return true
     } else {
-      console.log('3 Not the correct time to check in.');
+      console.log('Not the correct time to check in.');
       return false
     }
 
@@ -114,13 +116,15 @@ export default function Login() {
         </h1>
         <h2 className='text-md font-bold font-lato text-center'>Enter the unique code for the event.</h2>
         <div>
+          {invalidCode ? <h3 className='text-md font-bold font-lato text-center text-red-500'>Invalid code.</h3> : null}
+          {invalidTime ? <h3 className='text-md font-bold font-lato text-center text-red-500'>Not the correct time to check in.</h3> : null}
           <div className="mt-1 relative rounded-md shadow-sm pt-3">
             <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-center pointer-events-none" />
             <input
               type="tel"
               value={id}
               className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
-              placeholder="123456"
+              placeholder="Enter code here"
               onChange={(e) => setId(e.target.value)}
             />
           </div>
@@ -131,12 +135,16 @@ export default function Login() {
               className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
               onClick={async () => {
                 const eventData = await fetchEventData(id);
-                if (checkTime(eventData)) {
-                  setEventID(id)
-                  setShowCodeScreen(false)
-                  setShowConfirmation(true)
+                if(eventData) {
+                  if (checkTime(eventData)) {
+                    setEventID(id)
+                    setShowCodeScreen(false)
+                    setShowConfirmation(true)
+                  } else {
+                    setInvalidTime(true)
+                  }
                 } else {
-                  // TODO: display error message
+                  setInvalidCode(true)
                 }
               }}
             >Check In</button>
@@ -156,7 +164,7 @@ export default function Login() {
     return (
       <>
         <h1 className="text-xl font-bold font-lato text-center">
-          Looks like you're checking into:
+          Looks like you&apos;re checking into:
         </h1>
 
         <h1 className="text-2xl text-lime-500 font-bold font-lato text-center">
@@ -196,7 +204,7 @@ export default function Login() {
         <h1 className="text-2xl font-bold font-lato text-center">
           Success!
         </h1>
-        <h2 className='text-md font-bold font-lato text-center'>You're checked in.</h2>
+        <h2 className='text-md font-bold font-lato text-center'>You&apos;re checked in.</h2>
         <div>
           <div className="flex space-x-2 justify-center pt-4">
             <button

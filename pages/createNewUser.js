@@ -20,7 +20,7 @@ const Prompt = (props) => {
             <div>
                 <div className="mt-1 relative rounded-md shadow-sm pt-3">
                     <input
-                        type="tel"
+                        type="text"
                         value={props.value}
                         className="focus:ring-indigo-500 focus:border-indigo-500 block pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
                         onChange={e => props.inputFunction(e.target.value)}
