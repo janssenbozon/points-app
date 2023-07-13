@@ -146,7 +146,7 @@ function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
             },
             eventId: "NOT CHECKED IN",
             eventName: "NOT CHECKED IN",
-            eventRef: "NOT CHECKED IN",
+            pastEvents: "",
         }).then(() => {
             resolve(true);
         }).catch((error) => {

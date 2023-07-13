@@ -5,6 +5,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, getAuth }
 import { authentication, database } from '../firebase/clientApp.ts'
 import React, { useState, useEffect } from 'react';
 import { getDatabase, ref, set, get, onValue, push, update } from "firebase/database";
+import { useAuth } from '../hooks/useAuth'
 import { Router, useRouter } from 'next/router'
 
 export default function Login() {
@@ -14,31 +15,56 @@ export default function Login() {
   const [showCheckedIn, setShowCheckedIn] = useState(false)
   const [invalidCode, setInvalidCode] = useState(false)
   const [invalidTime, setInvalidTime] = useState(false)
+  const [checkedIn, setCheckedIn] = useState(false)
+  const [error, setError] = useState(false)
   const router = useRouter();
+  const auth = useAuth();
 
   // EVENT SPECIFIC DATA- LOADED AFTER CODE IS ENTERED
   const [eventID, setEventID] = useState(null)
   const [event, setEvent] = useState(null);
 
-  function fetchEventData(id) {
-    return new Promise((resolve, reject) => {
-      console.log("Ref = events/" + id);
+  async function fetchEventData(id) {
+  return new Promise(async (resolve, reject) => {
+    setCheckedIn(false);
+    setInvalidCode(false);
+    setInvalidTime(false);
+    setError(false);
+
+    console.log("Ref = events/" + id);
+
+    if (id.length !== 6) {
+      console.log("Invalid code length");
+      resolve("Invalid code");
+    }
+
+    try {
+      const userRef = ref(database, 'events/' + id + '/guestList/' + authentication.currentUser.uid);
+      console.log("User ref = " + userRef);
+      const userSnapshot = await get(userRef);
+
+      if (userSnapshot.exists()) {
+        console.log("User already checked in");
+        resolve("Checked in");
+      }
+      console.log("User not checked in");
 
       const eventRef = ref(database, 'events/' + id);
+      console.log("Event ref = " + eventRef);
+      const eventSnapshot = await get(eventRef);
 
-      get(eventRef)
-        .then((snapshot) => {
-          const eventData = snapshot.val();
-          console.log(eventData);
-          setEvent(eventData);
-          resolve(eventData);
-        })
-        .catch((error) => {
-          console.log("Error fetching event data:")
-          resolve(false);
-        });
-    });
-  }
+      const eventData = eventSnapshot.val();
+      console.log(eventData);
+      setEvent(eventData);
+      console.log("Event data loaded");
+      resolve(eventData);
+    } catch (error) {
+      console.log("Error fetching data:", error);
+      resolve("Error");
+    }
+  });
+}
+
 
   async function checkTime(eventData) {
 
@@ -77,20 +103,19 @@ export default function Login() {
       // TODO: Check if user is already checked in, if user's event id is 000000 they are not checked in.
 
       // IN EVENTS
-      const guestListRef = ref(database, 'events/' + eventID + '/guestList/');
+      const guestListRef = ref(database, 'events/' + eventID + '/guestList/' + uid);
 
       // push the user's uid to the guest list
-      const key = push(guestListRef, authentication.currentUser.uid).key;
+      const key = set(guestListRef, auth.user.firstName + " " + auth.user.lastName)
 
-      console.log("Added user to guest list with key " + key);
       console.log("Updating user's checked-in status...");
 
       // IN USERS    
       const updates = {};
 
       updates['/users/' + uid + '/eventId'] = eventID;
-      updates['/users/' + uid + '/eventRef'] = key;
       updates['/users/' + uid + '/eventName'] = event.name;
+      updates['/users/' + uid + '/pastEvents/' + eventID] = new Date().toISOString();
 
       // update the user's checked-in status
       update(ref(database), updates)
@@ -118,6 +143,8 @@ export default function Login() {
         <div>
           {invalidCode ? <h3 className='text-md font-bold font-lato text-center text-red-500'>Invalid code.</h3> : null}
           {invalidTime ? <h3 className='text-md font-bold font-lato text-center text-red-500'>Not the correct time to check in.</h3> : null}
+          {checkedIn ? <h3 className='text-md font-bold font-lato text-center text-red-500'>You checked into this event already.</h3> : null}
+          {error ? <h3 className='text-md font-bold font-lato text-center text-red-500'>There was a problem fetching the event.</h3> : null}
           <div className="mt-1 relative rounded-md shadow-sm pt-3">
             <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-center pointer-events-none" />
             <input
@@ -135,16 +162,20 @@ export default function Login() {
               className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
               onClick={async () => {
                 const eventData = await fetchEventData(id);
-                if(eventData) {
-                  if (checkTime(eventData)) {
+                if(eventData == "Invalid code") {
+                  setInvalidCode(true)
+                } else if (eventData == "Checked in") {
+                  setCheckedIn(true)
+                } else if (eventData == "Error") {
+                  setError(true)
+                } else {
+                  if (await checkTime(eventData)) {
                     setEventID(id)
                     setShowCodeScreen(false)
                     setShowConfirmation(true)
                   } else {
                     setInvalidTime(true)
                   }
-                } else {
-                  setInvalidCode(true)
                 }
               }}
             >Check In</button>

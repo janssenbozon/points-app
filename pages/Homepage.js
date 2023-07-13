@@ -74,7 +74,7 @@ export default function Homepage() {
     const checkOutComponent = () => {
         return (
             <>
-                <h1 className='text-4xl font-bold font-lato'>You&apos;re checked into {user.eventName}</h1>
+                <h1 className='text-4xl font-bold font-lato text-green-400'>You&apos;re checked into {user.eventName}</h1>
                 <div className="container mx-auto pt-3">
                     <button type="button"
                         className="w-full px-6 py-2.5 bg-green-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
