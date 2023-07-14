@@ -39,7 +39,7 @@ export default function Login() {
     }
 
     try {
-      const userRef = ref(database, 'events/' + id + '/guestList/' + authentication.currentUser.uid);
+      const userRef = ref(database, 'users/' + authentication.currentUser.uid + '/pastEvents/' + id);
       console.log("User ref = " + userRef);
       const userSnapshot = await get(userRef);
 
@@ -96,17 +96,17 @@ export default function Login() {
   // Add the user to the guest list and update their checked-in status
   function checkIn() {
     return new Promise((resolve, reject) => {
-      console.log("Checking in user to path " + 'events/' + eventID + '/guestList/');
 
       const uid = authentication.currentUser.uid;
 
       // TODO: Check if user is already checked in, if user's event id is 000000 they are not checked in.
 
-      // IN EVENTS
-      const guestListRef = ref(database, 'events/' + eventID + '/guestList/' + uid);
+      // this is if you need to add a user to the guest list but it doesn't look like we need to do that
+      // // IN EVENTS
+      // const guestListRef = ref(database, 'events/' + eventID + '/guestList/' + uid);
 
-      // push the user's uid to the guest list
-      const key = set(guestListRef, auth.user.firstName + " " + auth.user.lastName)
+      // // push the user's uid to the guest list
+      // const key = set(guestListRef, auth.user.firstName + " " + auth.user.lastName)
 
       console.log("Updating user's checked-in status...");
 
@@ -115,7 +115,7 @@ export default function Login() {
 
       updates['/users/' + uid + '/eventId'] = eventID;
       updates['/users/' + uid + '/eventName'] = event.name;
-      updates['/users/' + uid + '/pastEvents/' + eventID] = new Date().toISOString();
+      updates['/users/' + uid + '/pastEvents/' + eventID] = event;
 
       // update the user's checked-in status
       update(ref(database), updates)

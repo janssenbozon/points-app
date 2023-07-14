@@ -14,6 +14,7 @@ export default function Login() {
     const [currentPoints, setCurrentPoints] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(true)
     const [showCompletion, setShowCompletion] = useState(false)
+    const [eventId, setEventId] = useState(null)
     // Load event data from firebase before rendering
     useEffect(() => {
 
@@ -65,9 +66,9 @@ export default function Login() {
         console.log("Points = " + points);
 
         updates['/users/' + uid + '/eventId'] = "NOT CHECKED IN";
-        updates['/users/' + uid + '/eventRef'] = "NOT CHECKED IN";
         updates['/users/' + uid + '/eventName'] = "NOT CHECKED IN";
         updates['/users/' + uid + '/points/' + category] = points;
+        // TODO: Move pastEvents here
 
         // update the user's checked-in status
         update(ref(database), updates)

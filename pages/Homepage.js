@@ -143,6 +143,12 @@ export default function Homepage() {
                         </div>
                     </div>
                 </div>
+                <button type="button"
+                        className="w-full px-6 py-2.5 bg-gray-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => {
+                            router.push("/EventLog")
+                        }}
+                    >Event Log</button>
                 <SignOutButton />
             </main>
         </div>
