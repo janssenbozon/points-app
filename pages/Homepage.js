@@ -4,22 +4,19 @@ import { useRouter } from 'next/router'
 import { useAuth } from '../hooks/useAuth'
 import logo from "../public/logo.webp"
 import Image from 'next/image';
+import { authentication } from '../firebase/clientApp.ts';
 
 export default function Homepage() {
 
     const auth = useAuth();
     const user = auth.user;
 
-    console.log(user);
-
     // Set initial state values conditionally
     const [totalPoints, setTotalPoints] = useState(0);
     const router = useRouter();
 
     async function updateData() {
-        console.log("Updating user data");
         await auth.updateUser();
-        console.log(user);
         const community = user.points.community > 2 ? 2 : user.points.community;
         const sports = user.points.sports > 2 ? 2 : user.points.sports;
         const culture = user.points.culture > 2 ? 2 : user.points.culture;
@@ -28,21 +25,25 @@ export default function Homepage() {
         setTotalPoints(
             community + sports + culture + dance + wildcard
         );
-        console.log("User data updated");
     };
 
     useEffect(() => {
-        console.log("Loading user data");
-        updateData();
+
+        if (user) {
+            updateData();
+        }
 
         return () => {
-            console.log(user)
-            console.log("unmounting");
+            // Cleanup if needed
         }
-    }, []);
+    }, [authentication]);
 
-    if (!user) {
-        return <p>Loading...</p>; //TODO: Add loading screen
+    if (!auth.user || !authentication.currentUser) {
+        return (
+            <div className={styles.main}>
+                <span className="loading loading-spinner loading-lg" />
+            </div>
+        ) //TODO: Add loading screen
     }
 
     const ProgressBar = (props) => {
@@ -128,7 +129,7 @@ export default function Homepage() {
 
         <div className={styles.container}>
             <main className={styles.main}>
-                <Image src={logo} width={80} height={80}/>
+                <Image src={logo} width={80} height={80} />
                 <div className='container'>
                     <p className='text-xl font-bold font-lato'>Hi, {user.firstName}!</p>
                     {user.eventName == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
@@ -169,7 +170,7 @@ export default function Homepage() {
                         </div>
                     </div>
                 </div>
-                <EventLogButton/>
+                <EventLogButton />
                 <SignOutButton />
             </main>
         </div>

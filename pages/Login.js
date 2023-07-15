@@ -12,6 +12,7 @@ export default function Login() {
   const [codeInputShown, setCodeInputShown] = useState(false)
   const [incorrectCode, setIncorrectCode] = useState(false)
   const [incorrectPhoneNumber, setIncorrectPhoneNumber] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [otp, setOTP] = useState("")
   const auth = useAuth()
   const router = useRouter()
@@ -22,6 +23,7 @@ export default function Login() {
 
   const handleVerification = async () => {
     setIncorrectCode(false);
+    setLoading(true);
     try {
       if (await auth.verifyOTP(otp, window.confirmationResult)) {
         if (await auth.userExists()) {
@@ -37,6 +39,7 @@ export default function Login() {
       } else {
         setIncorrectCode(true)
       }
+      setLoading(false);
     } catch (error) {
       return <Error
         largeText="Something went wrong!"
@@ -48,6 +51,8 @@ export default function Login() {
   };
 
   const handlePhoneInput = async () => {
+
+    setLoading(true);
 
     auth.generateRecaptcha(); // Initialize reCAPTCHA on component mount
 
@@ -66,6 +71,7 @@ export default function Login() {
           setIncorrectPhoneNumber(true);
         }
       }
+      setLoading(false);
     } catch (error) {
       return <Error
         largeText="Something went wrong!"
@@ -113,6 +119,7 @@ export default function Login() {
               </div>
 
               <div className="flex space-x-2 justify-center pt-4">
+                {loading === true ? <span className="loading loading-spinner loading-lg"></span> :
                 <button
                   type="submit"
                   className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
@@ -120,6 +127,7 @@ export default function Login() {
                     handlePhoneInput();
                   }}
                 >Submit</button>
+                }
               </div>
             </div>
           </>
@@ -147,6 +155,7 @@ export default function Login() {
               </div>
 
               <div className="flex space-x-2 justify-center pt-4">
+                {loading === true ? <span className="loading loading-spinner loading-lg"></span> :
                 <button
                   type="button"
                   className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
@@ -154,6 +163,7 @@ export default function Login() {
                     handleVerification();
                   }}
                 >Submit</button>
+                }
               </div>
             </div>
           </>

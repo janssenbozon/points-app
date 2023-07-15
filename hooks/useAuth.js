@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, createContext } from 'react'
 import { RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "firebase/auth"
 import { authentication } from '../firebase/clientApp.ts'
-import { getDatabase, ref, get } from "firebase/database";
+import { getDatabase, ref, get, set } from "firebase/database";
 
 const authContext = createContext()
 
@@ -21,6 +21,7 @@ function useProvideAuth() {
   const handleUser = (rawUser) => {
 
     setLoading(true);
+    console.log("Handling user");
 
     if (rawUser) {
       const database = getDatabase();
@@ -30,12 +31,12 @@ function useProvideAuth() {
       get(usersRef)
         .then((snapshot) => {
           if (snapshot.exists()) {
-            console.log("User exists!");
             const user = snapshot.val();
             console.log(user);
             setUser(user);
           } else {
             console.log("User doesn't exist!");
+            setUser(null);
           }
         })
         .catch((error) => {
@@ -151,8 +152,9 @@ function useProvideAuth() {
   }
 
   function updateUser () {
-    console.log("Updating user");
+    setLoading(true);
     return new Promise((resolve, reject) => {
+      console.log("Updating user data")
       setUser(null);
       const database = getDatabase();
       const uid = authentication.currentUser.uid;
@@ -162,22 +164,25 @@ function useProvideAuth() {
         .then((snapshot) => {
           if (snapshot.exists()) {
             const user = snapshot.val()
-            console.log("New user data: ");
-            console.log(user);
             setUser(user);
+            setLoading(false);
+            console.log("User data updated");
             resolve(true);
           } else {
             console.log("User doesn't exist!");
+            setLoading(false);
             resolve(false);
           }
         })
         .catch((error) => {
+          setLoading(false);
           resolve(false);
         });
     });
   }
 
   useEffect(() => {
+    console.log("useEffect in useAuth.js called");
     const unsubscribe = authentication.onAuthStateChanged(handleUser)
     return () => unsubscribe()
   }, [])
