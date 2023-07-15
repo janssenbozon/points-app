@@ -50,50 +50,71 @@ const YearPrompt = (props) => {
                 {props.largeText}
             </h1>
             <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
-            <div className="flex space-x-2 justify-center pt-4">
-                <button
-                    type="button"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {
-                        console.log("Logging freshman.")
-                        props.inputFunction("Freshman");
-                    }}
-                >Freshman</button>
+            <div className="flex space-x-2 justify-center pt-1">
+                <label className="label cursor-pointer">
+                    <span className="mx-5">Freshman</span>
+                    <input type="radio"
+                        name="radio-1"
+                        className="radio"
+                        onClick={() => {
+                            console.log("Logging freshman.")
+                            props.inputFunction("Freshman");
+                        }} />
+                </label>
             </div>
-            <div className="flex space-x-2 justify-center pt-4">
-                <button
-                    type="button"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {
-                        props.inputFunction("Sophomore");
-                    }}
-                >Sophomore</button>
+            <div className="flex space-x-2 justify-center pt-1">
+                <label className="label cursor-pointer">
+                    <span className="mx-5">Sophomore</span>
+                    <input type="radio"
+                        name="radio-1"
+                        className="radio"
+                        onClick={() => {
+                            console.log("Logging sophomore.")
+                            props.inputFunction("Sophomore");
+                        }} />
+                </label>
             </div>
-            <div className="flex space-x-2 justify-center pt-4">
-                <button
-                    type="button"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {
-                        props.inputFunction("Junior");
-                    }}
-                >Junior</button>
+            <div className="flex space-x-2 justify-center pt-1">
+                <label className="label cursor-pointer">
+                    <span className="mx-5">Junior</span>
+                    <input type="radio" 
+                        name="radio-1"
+                        className="radio"
+                        onClick={() => {
+                            console.log("Logging junior.")
+                            props.inputFunction("Junior");
+                        }} />
+                </label>
             </div>
-            <div className="flex space-x-2 justify-center pt-4">
-                <button
-                    type="button"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {
-                        props.inputFunction("Senior");
-                    }}
-                >Senior</button>
+            <div className="flex space-x-2 justify-center pt-1">
+                <label className="label cursor-pointer">
+                    <span className="mx-5">Senior</span>
+                    <input type="radio"
+                        name="radio-1"
+                        className="radio"
+                        onClick={() => {
+                            console.log("Logging senior.")
+                            props.inputFunction("Senior");
+                        }} />
+                </label>
+            </div>
+            <div className="flex space-x-2 justify-center pt-1">
+                <label className="label cursor-pointer">
+                    <span className="mx-5">Graduate</span>
+                    <input type="radio"
+                        name="radio-1"
+                        className="radio"
+                        onClick={() => {
+                            console.log("Logging graduate.")
+                            props.inputFunction("Graduate");
+                        }} />
+                </label>
             </div>
             <div className="flex space-x-2 justify-center pt-4">
                 <button
                     type="submit"
-                    className="inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md"
-                    onClick={() => {
-                        props.screenFunction();
-                    }}
+                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={props.screenFunction}
                 >Next</button>
             </div>
         </>
