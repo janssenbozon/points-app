@@ -39,6 +39,17 @@ export default function Login() {
     }
 
     try {
+      
+      const eventRef = ref(database, 'events/' + id);
+      console.log("Event ref = " + eventRef);
+      const eventSnapshot = await get(eventRef);
+
+      if (!eventSnapshot.exists()) {
+        console.log("Event does not exist");
+        resolve("Invalid code");
+        return;
+      }
+
       const userRef = ref(database, 'users/' + authentication.currentUser.uid + '/pastEvents/' + id);
       console.log("User ref = " + userRef);
       const userSnapshot = await get(userRef);
@@ -46,12 +57,9 @@ export default function Login() {
       if (userSnapshot.exists()) {
         console.log("User already checked in");
         resolve("Checked in");
+        return;
       }
       console.log("User not checked in");
-
-      const eventRef = ref(database, 'events/' + id);
-      console.log("Event ref = " + eventRef);
-      const eventSnapshot = await get(eventRef);
 
       const eventData = eventSnapshot.val();
       console.log(eventData);
