@@ -158,6 +158,11 @@ export default function Login() {
 
           <div className="flex space-x-2 justify-center pt-4">
             <button
+              className='inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out'
+              type="submit"
+              onClick={() => router.push('/Homepage')}
+            >Return home</button>
+            <button
               type="submit"
               className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
               onClick={async () => {
@@ -198,12 +203,19 @@ export default function Login() {
           Looks like you&apos;re checking into:
         </h1>
 
-        <h1 className="text-2xl text-lime-500 font-bold font-lato text-center">
+        <h1 className="text-2xl text-green-400 font-bold font-lato text-center">
           {event.name}
         </h1>
         <h2 className='text-md font-bold font-lato text-center'>You gain {event.points} {event.category} points from this.</h2>
         <div>
           <div className="flex space-x-2 justify-center pt-4">
+            <button
+              type="submit"
+              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+              onClick={() => {
+                router.push('/Homepage');
+              }}
+            >Return Home</button>
             <button
               type="submit"
               className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
@@ -215,13 +227,6 @@ export default function Login() {
                 })
               }}
             >Continue</button>
-            <button
-              type="submit"
-              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-              onClick={() => {
-                router.push('/Homepage');
-              }}
-            >Return Home</button>
           </div>
         </div>
       </>
@@ -275,19 +280,6 @@ export default function Login() {
         <div id='recaptcha-container'></div>
 
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 

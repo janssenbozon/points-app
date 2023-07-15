@@ -142,7 +142,7 @@ function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
                 community: 0,
                 sports: 0,
                 dance: 0,
-                total: 0,
+                wildcard: 0,
             },
             eventId: "NOT CHECKED IN",
             eventName: "NOT CHECKED IN",

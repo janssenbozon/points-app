@@ -7,8 +7,12 @@ module.exports = {
     "./pages/_app.js.js",
     "./pages/Homepage.js",
     "./pages/Login.js",
-    "./pages/createNewUser.js"
-    // add components here if needed
+    "./pages/createNewUser.js",
+    "./pages/EventLog.js",
+    "./pages/CheckIn.js",
+    "./pages/CheckOut.js",
+    "./pages/Error.js"
+    // NOTE: add more components as needed
   ],
   theme: {
     extend: {

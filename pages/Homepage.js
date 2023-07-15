@@ -2,6 +2,8 @@ import styles from '../styles/Homepage.module.css'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import { useAuth } from '../hooks/useAuth'
+import logo from "../public/logo.webp"
+import Image from 'next/image';
 
 export default function Homepage() {
 
@@ -18,11 +20,13 @@ export default function Homepage() {
         console.log("Updating user data");
         await auth.updateUser();
         console.log(user);
+        const community = user.points.community > 2 ? 2 : user.points.community;
+        const sports = user.points.sports > 2 ? 2 : user.points.sports;
+        const culture = user.points.culture > 2 ? 2 : user.points.culture;
+        const dance = user.points.dance > 2 ? 2 : user.points.dance;
+        const wildcard = user.points.wildcard > 1 ? 1 : user.points.wildcard;
         setTotalPoints(
-            user.points.community +
-            user.points.sports +
-            user.points.culture +
-            user.points.dance
+            community + sports + culture + dance + wildcard
         );
         console.log("User data updated");
     };
@@ -74,7 +78,8 @@ export default function Homepage() {
     const checkOutComponent = () => {
         return (
             <>
-                <h1 className='text-4xl font-bold font-lato text-green-400'>You&apos;re checked into {user.eventName}</h1>
+                <h1 className='text-4xl font-bold font-lato text-white-400'>You&apos;re checked into</h1>
+                <h1 className='text-4xl font-bold font-lato text-green-400'>{user.eventName}</h1>
                 <div className="container mx-auto pt-3">
                     <button type="button"
                         className="w-full px-6 py-2.5 bg-green-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
@@ -90,7 +95,7 @@ export default function Homepage() {
             <>
                 <div className="container mx-auto pt-3">
                     <button type="button"
-                        className="w-full px-6 py-2.5 bg-red-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
+                        className="w-full px-6 py-2.5 bg-red-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-red-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-700 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={() => {
                             auth.signout().then(() => {
                                 router.push("/Login")
@@ -104,10 +109,26 @@ export default function Homepage() {
         )
     }
 
+    const EventLogButton = () => {
+        return (
+            <>
+                <div className="container mx-auto pt-3">
+                    <button type="button"
+                        className="w-full px-6 py-2.5 bg-gray-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => {
+                            router.push("/EventLog")
+                        }}
+                    >Event Log</button>
+                </div>
+            </>
+        )
+    }
+
     return (
 
         <div className={styles.container}>
             <main className={styles.main}>
+                <Image src={logo} width={80} height={80}/>
                 <div className='container'>
                     <p className='text-xl font-bold font-lato'>Hi, {user.firstName}!</p>
                     {user.eventName == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
@@ -115,40 +136,40 @@ export default function Homepage() {
 
 
                 <div className="container mx-auto pt-2">
-                <h1 className=' w-full text-3xl font-bold font-lato pt-2 pb-2 text-start'>Point Summary</h1>
-                    <div className="w-full overflow-hidden rounded-2xl shadow-lg bg-gray-200">
+                    <h1 className=' w-full text-3xl font-bold font-lato pt-2 pb-2 text-start'>Point Summary</h1>
+                    <div className="card w-full bg-base-300 shadow-xl px-4 py-4">
                         <div className="px-4 py-3">
                             <h1 className='text-2xl font-bold font-lato pb-2'>Goodphil 2023!</h1>
                             <progress className="progress progress-info w-full h-6" value={totalPoints} max="9"></progress>
                             <ProgressBar
                                 category="Culture"
                                 points={user.points.culture}
-                                max={3}
+                                max={2}
                             />
                             <ProgressBar
                                 category="Sports"
                                 points={user.points.sports}
-                                max={3}
+                                max={2}
                             />
                             <ProgressBar
                                 category="Dance"
                                 points={user.points.dance}
-                                max={3}
+                                max={2}
                             />
                             <ProgressBar
                                 category="Community"
                                 points={user.points.community}
-                                max={3}
+                                max={2}
+                            />
+                            <ProgressBar
+                                category="Wildcard"
+                                points={user.points.wildcard}
+                                max={1}
                             />
                         </div>
                     </div>
                 </div>
-                <button type="button"
-                        className="w-full px-6 py-2.5 bg-gray-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
-                        onClick={() => {
-                            router.push("/EventLog")
-                        }}
-                    >Event Log</button>
+                <EventLogButton/>
                 <SignOutButton />
             </main>
         </div>
