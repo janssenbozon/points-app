@@ -1,12 +1,18 @@
-import { useAuth } from '../hooks/useAuth'
 import Homepage from './Homepage'
 import Login from './Login'
+import { useAuth } from '../hooks/useAuth'
 
 export default function Home() {
 
-  const auth = useAuth();
+  const {loading, user} = useAuth();
 
-  return auth.user ? (
+  if(loading) {
+    return (
+      <div className="loading loading-lg" />
+    )
+  }
+
+  return user ? ( 
     <Homepage />
   ) : (
     <Login />

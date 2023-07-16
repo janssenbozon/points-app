@@ -19,8 +19,6 @@ function useProvideAuth() {
   const [loading, setLoading] = useState(true)
 
   const handleUser = (rawUser) => {
-
-    setLoading(true);
     console.log("Handling user");
 
     if (rawUser) {
@@ -32,6 +30,7 @@ function useProvideAuth() {
         .then((snapshot) => {
           if (snapshot.exists()) {
             const user = snapshot.val();
+            user.points.total = user.points.community + user.points.sports + user.points.culture + user.points.dance + user.points.wildcard;
             console.log(user);
             setUser(user);
           } else {
@@ -52,6 +51,7 @@ function useProvideAuth() {
   };
 
   const signout = () => {
+    setLoading(true);
     return new Promise((resolve, reject) => {
       authentication.signOut()
         .then(() => {
@@ -61,6 +61,7 @@ function useProvideAuth() {
         .catch((error) => {
           resolve(false);
         });
+        setLoading(false);
     });
   }
 
@@ -156,28 +157,7 @@ function useProvideAuth() {
     return new Promise((resolve, reject) => {
       console.log("Updating user data")
       setUser(null);
-      const database = getDatabase();
-      const uid = authentication.currentUser.uid;
-      const usersRef = ref(database, 'users/' + uid);
-  
-      get(usersRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const user = snapshot.val()
-            setUser(user);
-            setLoading(false);
-            console.log("User data updated");
-            resolve(true);
-          } else {
-            console.log("User doesn't exist!");
-            setLoading(false);
-            resolve(false);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          resolve(false);
-        });
+      handleUser(true);
     });
   }
 

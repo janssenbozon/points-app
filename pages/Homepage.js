@@ -5,26 +5,14 @@ import { useAuth } from '../hooks/useAuth'
 import logo from "../public/logo.webp"
 import Image from 'next/image';
 import { authentication } from '../firebase/clientApp.ts';
-
 export default function Homepage() {
 
     const auth = useAuth();
     const user = auth.user;
-
-    // Set initial state values conditionally
-    const [totalPoints, setTotalPoints] = useState(0);
     const router = useRouter();
 
     async function updateData() {
         await auth.updateUser();
-        const community = user.points.community > 2 ? 2 : user.points.community;
-        const sports = user.points.sports > 2 ? 2 : user.points.sports;
-        const culture = user.points.culture > 2 ? 2 : user.points.culture;
-        const dance = user.points.dance > 2 ? 2 : user.points.dance;
-        const wildcard = user.points.wildcard > 1 ? 1 : user.points.wildcard;
-        setTotalPoints(
-            community + sports + culture + dance + wildcard
-        );
     };
 
     useEffect(() => {
@@ -38,12 +26,12 @@ export default function Homepage() {
         }
     }, [authentication]);
 
-    if (!auth.user || !authentication.currentUser) {
+    if (auth.loading || !user) {
         return (
             <div className={styles.main}>
                 <span className="loading loading-spinner loading-lg" />
             </div>
-        ) //TODO: Add loading screen
+        )
     }
 
     const ProgressBar = (props) => {
@@ -141,7 +129,7 @@ export default function Homepage() {
                     <div className="card w-full bg-base-300 shadow-xl px-4 py-4">
                         <div className="px-4 py-3">
                             <h1 className='text-2xl font-bold font-lato pb-2'>Goodphil 2023!</h1>
-                            <progress className="progress progress-info w-full h-6" value={totalPoints} max="9"></progress>
+                            <progress className="progress progress-info w-full h-6" value={user.points.total} max="9"></progress>
                             <ProgressBar
                                 category="Culture"
                                 points={user.points.culture}
