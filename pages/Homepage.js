@@ -2,8 +2,6 @@ import styles from '../styles/Homepage.module.css'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import { useAuth } from '../hooks/useAuth'
-import logo from "../public/logo.webp"
-import Image from 'next/image';
 import { authentication } from '../firebase/clientApp.ts';
 export default function Homepage() {
 
@@ -110,7 +108,6 @@ export default function Homepage() {
 
         <div className={styles.container}>
             <main className={styles.main}>
-                <Image src={logo} width={80} height={80} />
                 <div className='container'>
                     <p className='text-xl font-bold font-lato'>Hi, {user.firstName}!</p>
                     {user.eventName == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
