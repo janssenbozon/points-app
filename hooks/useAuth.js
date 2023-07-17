@@ -19,7 +19,8 @@ function useProvideAuth() {
   const [loading, setLoading] = useState(true)
 
   const handleUser = (rawUser) => {
-    console.log("Handling user");
+
+    setLoading(true);
 
     if (rawUser) {
       const database = getDatabase();
@@ -31,10 +32,8 @@ function useProvideAuth() {
           if (snapshot.exists()) {
             const user = snapshot.val();
             user.points.total = user.points.community + user.points.sports + user.points.culture + user.points.dance + user.points.wildcard;
-            console.log(user);
             setUser(user);
           } else {
-            console.log("User doesn't exist!");
             setUser(null);
           }
         })
@@ -67,7 +66,6 @@ function useProvideAuth() {
 
   // Generate reCAPTCHA for phone number verification
   const generateRecaptcha = () => {    
-    console.log("Generating reCAPTCHA");
     if (typeof window !== "undefined" && typeof document !== "undefined") {
       const recaptchaContainer = document.getElementById("recaptcha-container");
       if (recaptchaContainer && !window.recaptchaVerifier) {
@@ -85,7 +83,6 @@ function useProvideAuth() {
   // Request OTP using phone number
   const requestOTP = (phoneNumber) => {
     return new Promise((resolve, reject) => {
-      console.log("Requesting OTP for +1" + phoneNumber + "...");
   
       let newPhoneNumber = "+1" + phoneNumber;
   
@@ -93,10 +90,8 @@ function useProvideAuth() {
       signInWithPhoneNumber(authentication, newPhoneNumber, appVerifier)
         .then(confirmationResult => {
           window.confirmationResult = confirmationResult;
-          console.log("OTP sent");
           resolve(true);
         }).catch((error) => {
-          console.log("OTP not sent");
           console.log(error);
           resolve(false);
         });
@@ -106,7 +101,6 @@ function useProvideAuth() {
   // Verify OTP
   // TODO: Fix this, only checks if OTP is 6 digits long
   const verifyOTP = (otp, confirmationResult) => {
-    console.log("Verifying OTP");
     return new Promise((resolve, reject) => {
       if (otp.length === 6) {
         confirmationResult.confirm(otp)
@@ -128,7 +122,6 @@ function useProvideAuth() {
 
   // Checks if the user exists in the real time database via their UID
   function userExists () {
-    console.log("Checking if user exists");
     return new Promise((resolve, reject) => {
       const database = getDatabase();
       const uid = authentication.currentUser.uid;
@@ -137,10 +130,8 @@ function useProvideAuth() {
       get(usersRef)
         .then((snapshot) => {
           if (snapshot.exists()) {
-            console.log("User exists!");
             resolve(true);
           } else {
-            console.log("User doesn't exist!");
             resolve(false);
           }
         })
@@ -153,16 +144,10 @@ function useProvideAuth() {
   }
 
   function updateUser () {
-    setLoading(true);
-    return new Promise((resolve, reject) => {
-      console.log("Updating user data")
-      setUser(null);
-      handleUser(true);
-    });
+    handleUser(true);
   }
 
   useEffect(() => {
-    console.log("useEffect in useAuth.js called");
     const unsubscribe = authentication.onAuthStateChanged(handleUser)
     return () => unsubscribe()
   }, [])

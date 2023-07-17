@@ -11,19 +11,12 @@ export default function Homepage() {
     const user = auth.user;
     const router = useRouter();
 
-    async function updateData() {
-        await auth.updateUser();
-    };
-
     useEffect(() => {
 
         if (user) {
-            updateData();
+            auth.updateUser();
         }
 
-        return () => {
-            // Cleanup if needed
-        }
     }, [authentication]);
 
     if (auth.loading || !user) {
