@@ -257,7 +257,8 @@ export default function CreateNewUser(props) {
                         inputFunction={setBigFam}
                         screenFunction={async () => {
                             const uid = authentication.currentUser.uid;
-                            if (await writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) && await auth.updateUser()) {
+                            if (await writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year)) {
+                                auth.updateUser()
                                 setScreen(5)
                             } else {
                                 alert("Something went wrong. Please try again.")

@@ -2,6 +2,9 @@ import styles from '../styles/Homepage.module.css'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import { useAuth } from '../hooks/useAuth'
+import logoDark from '../public/logoDark.png';
+import logoLight from '../public/logoLight.png';
+import Image from 'next/image';
 import { authentication } from '../firebase/clientApp.ts';
 export default function Homepage() {
 
@@ -108,6 +111,15 @@ export default function Homepage() {
 
         <div className={styles.container}>
             <main className={styles.main}>
+                <picture>
+                    <source srcSet={logoLight} media="(prefers-color-scheme: dark)" />
+                    <Image
+                        src={logoDark}
+                        width={100}
+                        height={100}
+                        alt="FSA Logo"
+                    />
+                </picture>
                 <div className='container'>
                     <p className='text-xl font-bold font-lato'>Hi, {user.firstName}!</p>
                     {user.eventName == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
