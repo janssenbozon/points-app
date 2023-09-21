@@ -1,6 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import React, { useEffect, useState } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
 import { CheckCircleIcon } from '@heroicons/react/outline'
@@ -12,31 +10,30 @@ import { useAuth } from '../hooks/useAuth'
 const Prompt = (props) => {
 
     return (
-        <>
+        <div class="flex min-h-screen flex-col justify-center items-center p-24">
             <h1 className="text-2xl font-bold font-lato text-center">
                 {props.largeText}
             </h1>
-            <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
-            <div>
-                <div className="mt-1 relative rounded-md shadow-sm pt-3">
-                    <input
-                        type="text"
-                        value={props.value}
-                        className="focus:ring-indigo-500 focus:border-indigo-500 block pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
-                        onChange={e => props.inputFunction(e.target.value)}
-                    />
-                </div>
+            <h2 className='text-md font-bold pb-4'>{props.smallText}</h2>
+            <input
+                type="text"
+                value={props.value}
+                class="input input-bordered w-full max-w-xs"
+                onChange={e => props.inputFunction(e.target.value)}
+            />
 
-                <div className="flex space-x-2 justify-center pt-4">
-                    <button
-                        type="submit"
-                        className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
-                        onClick={props.screenFunction}
-                    >Next</button>
-                </div>
+            <div className="flex flex-row space-x-2 justify-center align-middle pt-4">
+                {props.showBackButton ? <button type="submit" className="btn" onClick={props.backFunction}>Back</button> : null}
+                <button
+                    type="submit"
+                    className="btn"
+                    onClick={props.screenFunction}
+                >Next</button>
             </div>
 
-        </>
+            
+
+        </div>
     )
 
 }
@@ -45,79 +42,28 @@ const Prompt = (props) => {
 const YearPrompt = (props) => {
 
     return (
-        <>
+        <div class="flex min-h-screen flex-col justify-center items-center p-24">
             <h1 className="text-2xl font-bold font-lato text-center">
                 {props.largeText}
             </h1>
-            <h2 className='text-md font-bold font-lato text-center'>{props.smallText}</h2>
-            <div className="flex space-x-2 justify-center pt-1">
-                <label className="label cursor-pointer">
-                    <span className="mx-5">Freshman</span>
-                    <input type="radio"
-                        name="radio-1"
-                        className="radio"
-                        onClick={() => {
-                            console.log("Logging freshman.")
-                            props.inputFunction("Freshman");
-                        }} />
-                </label>
-            </div>
-            <div className="flex space-x-2 justify-center pt-1">
-                <label className="label cursor-pointer">
-                    <span className="mx-5">Sophomore</span>
-                    <input type="radio"
-                        name="radio-1"
-                        className="radio"
-                        onClick={() => {
-                            console.log("Logging sophomore.")
-                            props.inputFunction("Sophomore");
-                        }} />
-                </label>
-            </div>
-            <div className="flex space-x-2 justify-center pt-1">
-                <label className="label cursor-pointer">
-                    <span className="mx-5">Junior</span>
-                    <input type="radio" 
-                        name="radio-1"
-                        className="radio"
-                        onClick={() => {
-                            console.log("Logging junior.")
-                            props.inputFunction("Junior");
-                        }} />
-                </label>
-            </div>
-            <div className="flex space-x-2 justify-center pt-1">
-                <label className="label cursor-pointer">
-                    <span className="mx-5">Senior</span>
-                    <input type="radio"
-                        name="radio-1"
-                        className="radio"
-                        onClick={() => {
-                            console.log("Logging senior.")
-                            props.inputFunction("Senior");
-                        }} />
-                </label>
-            </div>
-            <div className="flex space-x-2 justify-center pt-1">
-                <label className="label cursor-pointer">
-                    <span className="mx-5">Graduate</span>
-                    <input type="radio"
-                        name="radio-1"
-                        className="radio"
-                        onClick={() => {
-                            console.log("Logging graduate.")
-                            props.inputFunction("Graduate");
-                        }} />
-                </label>
-            </div>
+            <h2 className='text-md font-bold pb-4'>{props.smallText}</h2>
+            <select className="select select-bordered w-full max-w-xs" value={props.value} onChange={(e) => props.inputFunction(e.target.value)}>
+                <option disabled selected>Select your year</option>
+                <option value="Freshman">Freshman</option>
+                <option  value="Sophomore">Sophomore</option>
+                <option  value="Junior">Junior</option>
+                <option  value="Senior">Senior</option>
+                <option  value="Graduate">Graduate</option>
+            </select>
             <div className="flex space-x-2 justify-center pt-4">
+                <button type="submit" className="btn" onClick={props.backFunction}>Back</button>
                 <button
                     type="submit"
-                    className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                    className="btn"
                     onClick={props.screenFunction}
                 >Next</button>
             </div>
-        </>
+        </div>
     )
 
 }
@@ -138,7 +84,7 @@ const ConfirmationScreen = (props) => {
                 <div className="flex space-x-2 justify-center pt-4">
                     <button
                         type="submit"
-                        className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                        class="btn"
                         onClick={props.screenFunction}
                     >Go to Homepage</button>
                 </div>
@@ -194,27 +140,25 @@ export default function CreateNewUser(props) {
 
     return (
 
-        <div className={styles.container}>
+        <div className="">
 
             <Head>
                 <title>Create Next App</title>
                 <meta name="description" content="Generated by create next app" />
                 <link rel="icon" href="/favicon.ico" />
-                <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin></link>
-                <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"></link>
             </Head>
-            <main className={styles.main}>
+            <main className="">
 
                 {screen == 1 ?
-
-                    <Prompt
-                        largeText="You're verified! Now let's get to know you better."
-                        smallText="What's your first name?"
-                        value={firstName}
-                        inputFunction={setFirstName}
-                        screenFunction={() => setScreen(2)}
-                    />
+                    <div class="flex flex-col align-middle justify-center">
+                        <Prompt
+                            largeText="You're verified! Now let's get to know you better."
+                            smallText="What's your first name?"
+                            value={firstName}
+                            inputFunction={setFirstName}
+                            screenFunction={() => setScreen(2)}
+                        />
+                    </div>
 
                     : null
 
@@ -228,6 +172,8 @@ export default function CreateNewUser(props) {
                         value={lastName}
                         inputFunction={setLastName}
                         screenFunction={() => setScreen(3)}
+                        showBackButton={true}
+                        backFunction={() => setScreen(1)}
                     />
 
                     : null
@@ -242,6 +188,8 @@ export default function CreateNewUser(props) {
                         value={year}
                         inputFunction={setYear}
                         screenFunction={() => setScreen(4)}
+                        showBackButton={true}
+                        backFunction={() => setScreen(2)}
                     />
 
                     : null
@@ -261,9 +209,11 @@ export default function CreateNewUser(props) {
                                 auth.updateUser()
                                 setScreen(5)
                             } else {
-                                alert("Something went wrong. Please try again.")
+                                alert("Something went wrong. Please reload the page and try again.")
                             }
                         }}
+                        showBackButton={true}
+                        backFunction={() => setScreen(3)}
                     />
 
                     : null

@@ -52,7 +52,7 @@ export default function Login() {
             <>
                 <div className="container mx-auto pt-4">
                     <button type="button"
-                        className="w-full px-6 py-2.5 bg-gray-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out"
+                        className="btn w-full bg-gray-400 text-white leading-tight uppercase shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={() => {
                             router.push("/Homepage")
                         }}

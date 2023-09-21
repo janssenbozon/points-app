@@ -112,7 +112,7 @@ export default function Login() {
                 <input
                   type="tel"
                   value={phoneNumber}
-                  className="focus:ring-indigo-500 block w-full pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
+                  className="input input-bordered w-full pl-11 pr-12"
                   placeholder="(000) 000 - 0000"
                   onChange={e => setPhoneNumber(e.target.value)}
                 />
@@ -122,7 +122,7 @@ export default function Login() {
                 {loading === true ? <span className="loading loading-spinner loading-lg"></span> :
                 <button
                   type="submit"
-                  className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                  className="btn"
                   onClick={(e) => {
                     handlePhoneInput();
                   }}
@@ -150,7 +150,7 @@ export default function Login() {
                   type="tel"
                   value={otp}
                   onChange={e => setOTP(e.target.value)}
-                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-11 pr-12 sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
+                  className="input input-bordered w-full pl-11 pr-12"
                 />
               </div>
 
@@ -158,7 +158,7 @@ export default function Login() {
                 {loading === true ? <span className="loading loading-spinner loading-lg"></span> :
                 <button
                   type="button"
-                  className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                  className="btn"
                   onClick={() => {
                     handleVerification();
                   }}

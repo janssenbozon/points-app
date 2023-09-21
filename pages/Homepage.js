@@ -51,7 +51,7 @@ export default function Homepage() {
                 <div className="container mx-auto pt-3">
                     <button
                         type="button"
-                        className="w-full px-6 py-2.5 bg-green-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
+                        className="btn w-full bg-green-400 text-white leading-tight uppercase shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={() => router.push("/CheckIn")}>Check-in</button>
                 </div>
             </>
@@ -65,7 +65,7 @@ export default function Homepage() {
                 <h1 className='text-4xl font-bold font-lato text-green-400'>{user.eventName}</h1>
                 <div className="container mx-auto pt-3">
                     <button type="button"
-                        className="w-full px-6 py-2.5 bg-green-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
+                        className="btn w-full bg-green-400 text-white leading-tight uppercase shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={() => router.push("/CheckOut")}
                     >Check-out</button>
                 </div>
@@ -78,7 +78,7 @@ export default function Homepage() {
             <>
                 <div className="container mx-auto pt-3">
                     <button type="button"
-                        className="w-full px-6 py-2.5 bg-red-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-red-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-700 active:shadow-lg transition duration-150 ease-in-out"
+                        className="btn w-full bg-red-400 text-white leading-tight uppercase shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-red-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-700 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={() => {
                             auth.signout().then(() => {
                                 router.push("/Login")
@@ -97,7 +97,7 @@ export default function Homepage() {
             <>
                 <div className="container mx-auto pt-3">
                     <button type="button"
-                        className="w-full px-6 py-2.5 bg-gray-400 text-white font-medium text-sm leading-tight uppercase rounded-xl shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out"
+                        className="btn w-full bg-gray-400 text-white leading-tight uppercase shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={() => {
                             router.push("/EventLog")
                         }}

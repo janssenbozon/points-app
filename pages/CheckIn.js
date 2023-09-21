@@ -158,7 +158,7 @@ export default function Login() {
             <input
               type="tel"
               value={id}
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-xl transition ease-in-out"
+              className="input w-full"
               placeholder="Enter code here"
               onChange={(e) => setId(e.target.value)}
             />
@@ -166,13 +166,13 @@ export default function Login() {
 
           <div className="flex space-x-2 justify-center pt-4">
             <button
-              className='inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out'
+              className='btn'
               type="submit"
               onClick={() => router.push('/Homepage')}
             >Return home</button>
             <button
               type="submit"
-              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+              className="btn"
               onClick={async () => {
                 const eventData = await fetchEventData(id);
                 if(eventData == "Invalid code") {
@@ -219,14 +219,14 @@ export default function Login() {
           <div className="flex space-x-2 justify-center pt-4">
             <button
               type="submit"
-              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+              className='btn'
               onClick={() => {
                 router.push('/Homepage');
               }}
             >Return Home</button>
             <button
               type="submit"
-              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+              className='btn'
               onClick={() => {
                 checkIn().then(() => {
                   setShowConfirmation(false);
@@ -253,7 +253,7 @@ export default function Login() {
           <div className="flex space-x-2 justify-center pt-4">
             <button
               type="submit"
-              className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+              className='btn'
               onClick={() => {
                 router.push('/Homepage')
               }}

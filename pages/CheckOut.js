@@ -100,7 +100,7 @@ export default function Login() {
                     <div className="flex space-x-2 justify-center pt-4">
                         <button
                             type="submit"
-                            className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                            className='btn'
                             onClick={() => {
                                 checkOut();
                                 setShowConfirmation(false);
@@ -124,7 +124,7 @@ export default function Login() {
                     <div className="flex space-x-2 justify-center pt-4">
                         <button
                             type="submit"
-                            className="inline-block px-6 py-2.5 bg-gray-800 text-white font-medium text-sm leading-tight uppercase rounded-lg shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out"
+                            className='btn'
                             onClick={() => {
                                 router.push('/Homepage')
                             }}
