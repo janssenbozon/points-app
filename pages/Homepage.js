@@ -2,8 +2,7 @@ import styles from '../styles/Homepage.module.css'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import { useAuth } from '../hooks/useAuth'
-import logoDark from '../public/logoDark.png';
-import logoLight from '../public/logoLight.png';
+import logo from '../public/fsa-logo.svg';
 import Image from 'next/image';
 import { authentication } from '../firebase/clientApp.ts';
 export default function Homepage() {
@@ -108,61 +107,50 @@ export default function Homepage() {
     }
 
     return (
+        <main className="flex min-h-screen flex-col items-center justify-center px-5 space-y-auto">
 
-        <div className={styles.container}>
-            <main className={styles.main}>
-                <picture>
-                    <source srcSet={logoLight} media="(prefers-color-scheme: dark)" />
-                    <Image
-                        src={logoDark}
-                        width={100}
-                        height={100}
-                        alt="FSA Logo"
-                    />
-                </picture>
-                <div className='container'>
-                    <p className='text-xl font-bold font-lato'>Hi, {user.firstName}!</p>
-                    {user.eventName == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
-                </div>
+            <div className='container'>
+                <p className='text-xl font-bold font-lato'>Hi, {user.firstName}!</p>
+                {user.eventName == "NOT CHECKED IN" ? checkInComponent() : checkOutComponent()}
+            </div>
 
 
-                <div className="container mx-auto pt-2">
-                    <h1 className=' w-full text-3xl font-bold font-lato pt-2 pb-2 text-start'>Point Summary</h1>
-                    <div className="card w-full bg-base-300 shadow-xl px-4 py-4">
-                        <div className="px-4 py-3">
-                            <h1 className='text-2xl font-bold font-lato pb-2'>Goodphil 2023!</h1>
-                            <progress className="progress progress-info w-full h-6" value={user.points.total} max="9"></progress>
-                            <ProgressBar
-                                category="Culture"
-                                points={user.points.culture}
-                                max={2}
-                            />
-                            <ProgressBar
-                                category="Sports"
-                                points={user.points.sports}
-                                max={2}
-                            />
-                            <ProgressBar
-                                category="Dance"
-                                points={user.points.dance}
-                                max={2}
-                            />
-                            <ProgressBar
-                                category="Community"
-                                points={user.points.community}
-                                max={2}
-                            />
-                            <ProgressBar
-                                category="Wildcard"
-                                points={user.points.wildcard}
-                                max={1}
-                            />
-                        </div>
+            <div className="container mx-auto pt-2">
+                <h1 className=' w-full text-3xl font-bold font-lato pt-2 pb-2 text-start'>Point Summary</h1>
+                <div className="card w-full bg-base-300 shadow-xl px-4 py-4">
+                    <div className="px-4 py-3">
+                        <h1 className='text-2xl font-bold font-lato pb-2'>Goodphil 2023!</h1>
+                        <progress className="progress progress-info w-full h-6" value={user.points.total} max="9"></progress>
+                        <ProgressBar
+                            category="Culture"
+                            points={user.points.culture}
+                            max={2}
+                        />
+                        <ProgressBar
+                            category="Sports"
+                            points={user.points.sports}
+                            max={2}
+                        />
+                        <ProgressBar
+                            category="Dance"
+                            points={user.points.dance}
+                            max={2}
+                        />
+                        <ProgressBar
+                            category="Community"
+                            points={user.points.community}
+                            max={2}
+                        />
+                        <ProgressBar
+                            category="Wildcard"
+                            points={user.points.wildcard}
+                            max={1}
+                        />
                     </div>
                 </div>
-                <EventLogButton />
-                <SignOutButton />
-            </main>
-        </div>
+            </div>
+            <EventLogButton />
+            <SignOutButton />
+        </main>
     )
 }
