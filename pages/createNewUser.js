@@ -68,6 +68,35 @@ const YearPrompt = (props) => {
 
 }
 
+const FamPrompt = (props) => {
+
+    return (
+        <div class="flex min-h-screen flex-col justify-center items-center p-24">
+            <h1 className="text-2xl font-bold font-lato text-center">
+                {props.largeText}
+            </h1>
+            <h2 className='text-md font-bold pb-4'>{props.smallText}</h2>
+            <select className="select select-bordered w-full max-w-xs" value={props.value} onChange={(e) => props.inputFunction(e.target.value)}>
+                <option disabled selected>Select your big fam</option>
+                <option value="Dora and Diego">Dora and Diego</option>
+                <option  value="Backyardigans">Backyardigans</option>
+                <option  value="Wonder Pets">Wonder Pets</option>
+                <option  value="Sesame Street">Sesame Street</option>
+                <option  value="I don't know">I don't know</option>
+            </select>
+            <div className="flex space-x-2 justify-center pt-4">
+                <button type="submit" className="btn" onClick={props.backFunction}>Back</button>
+                <button
+                    type="submit"
+                    className="btn"
+                    onClick={props.screenFunction}
+                >Next</button>
+            </div>
+        </div>
+    )
+
+}
+
 // Confirmation screen template
 const ConfirmationScreen = (props) => {
 
@@ -125,8 +154,8 @@ function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
 export default function CreateNewUser(props) {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
-    const [year, setYear] = useState("")
-    const [bigFam, setBigFam] = useState("")
+    const [year, setYear] = useState("Freshman")
+    const [bigFam, setBigFam] = useState("Dora and Diego")
     const [screen, setScreen] = useState(1)
     const router = useRouter();
     const auth = useAuth();
@@ -198,9 +227,9 @@ export default function CreateNewUser(props) {
 
                 {screen == 4 ?
 
-                    <Prompt
+                    <FamPrompt
                         largeText={`Ok, last question.`}
-                        smallText="What big fam are you in?"
+                        smallText={`What big fam are you in?`}
                         value={bigFam}
                         inputFunction={setBigFam}
                         screenFunction={async () => {
