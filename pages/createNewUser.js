@@ -82,7 +82,7 @@ const FamPrompt = (props) => {
                 <option  value="Backyardigans">Backyardigans</option>
                 <option  value="Wonder Pets">Wonder Pets</option>
                 <option  value="Sesame Street">Sesame Street</option>
-                <option  value="I don't know">I don't know</option>
+                <option  value="I don'&apos;t know">I dont know</option>
             </select>
             <div className="flex space-x-2 justify-center pt-4">
                 <button type="submit" className="btn" onClick={props.backFunction}>Back</button>

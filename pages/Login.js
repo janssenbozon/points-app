@@ -11,15 +11,11 @@ export default function Login() {
   const [phoneInputShown, setPhoneInputShown] = useState(true)
   const [codeInputShown, setCodeInputShown] = useState(false)
   const [incorrectCode, setIncorrectCode] = useState(false)
-  const [incorrectPhoneNumber, setIncorrectPhoneNumber] = useState(false)
+  const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [otp, setOTP] = useState("")
   const auth = useAuth()
   const router = useRouter()
-
-  // useEffect(() => {
-    
-  // }, []);
 
   const handleVerification = async () => {
     setIncorrectCode(false);
@@ -36,17 +32,12 @@ export default function Login() {
             }
           }, '/createNewUser');
         }
-      } else {
-        setIncorrectCode(true)
       }
       setLoading(false);
     } catch (error) {
-      return <Error
-        largeText="Something went wrong!"
-        smallText="Please try again."
-        action={() => router.push('/Login')}
-        actionPrompt="Back to login."
-      />
+      console.log(error)
+      setError(error.code);
+      setLoading(false);
     }
   };
 
@@ -59,27 +50,15 @@ export default function Login() {
     console.log("Phone number: " + phoneNumber)
 
     try {
-      if (phoneNumber.length != 10) {
-        setIncorrectPhoneNumber(true);
-      } else {
-        if(await auth.requestOTP(phoneNumber)) {
-          console.log("Correct phone number")
-          setPhoneInputShown(false);
-          setCodeInputShown(true);
-        } else {
-          console.log("Incorrect phone number")
-          setIncorrectPhoneNumber(true);
-        }
-      }
+      var result = await auth.requestOTP(phoneNumber);
+      setPhoneInputShown(false);
+      setCodeInputShown(true);
       setLoading(false);
     } catch (error) {
-      return <Error
-        largeText="Something went wrong!"
-        smallText="Please try again."
-        action={() => router.push('/Login')}
-        actionPrompt="Back to login."
-      />
+      setError(error.code);
+      setLoading(false);
     }
+
   };
 
   // TODO: Break down into components
@@ -94,7 +73,7 @@ export default function Login() {
               Hey there! 👋🏼  Welcome to UTFSA! 🇵🇭
             </h1>
             <h2 className='text-md font-bold font-lato text-center'>To get started, enter your phone number.</h2>
-            {incorrectPhoneNumber === true ? <h2 className='text-md font-bold font-lato text-center text-red-500'>Please enter a valid phone number.</h2> : null}
+            {error === null ? null : <h2 className='text-md font-bold font-lato text-center text-red-500'>Something went wrong. Please try again. Error code: {error} </h2>}
             <div>
               <div className="mt-1 relative rounded-md shadow-sm pt-3">
                 <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-center pointer-events-none">
@@ -131,8 +110,7 @@ export default function Login() {
               We sent you a code!
             </h1>
             <h2 className='text-md font-bold font-lato text-center'>Please enter it below.</h2>
-            {incorrectCode === true ? <h2 className='text-md font-bold font-lato text-center text-red-500'>Incorrect code. Please try again.</h2> : null}
-            <div>
+            {error === null ? null : <h2 className='text-md font-bold font-lato text-center text-red-500'>Something went wrong. Please try again. Error code: {error} </h2>}<div>
               <div className="mt-1 relative rounded-md shadow-sm pt-3">
                 <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-center pointer-events-none">
                   <span className="text-gray-500 sm:text-sm">🔑</span>

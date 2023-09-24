@@ -92,8 +92,7 @@ function useProvideAuth() {
           window.confirmationResult = confirmationResult;
           resolve(true);
         }).catch((error) => {
-          console.log(error);
-          resolve(false);
+          reject(error);
         });
     });
   }
@@ -114,7 +113,7 @@ function useProvideAuth() {
             reject(error);
           });
       } else {
-        resolve(false);
+        reject("OTP must be 6 digits long");
       }
     });
   };
