@@ -32,10 +32,14 @@ export default function Login() {
                         </thead>
                         <tbody>
                             {props.events.map((event) => {
+
+                                const date = new Date(event.start);
+                                const dateString = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' });
+
                                 return (
                                     <tr key={event.name}>
                                         <td className=''>{event.name}</td>
-                                        <td className=''>{event.start.slice(6, 10)}</td>
+                                        <td className=''>{dateString}</td>
                                         <td className=''>{event.points}</td>
                                     </tr>
                                 );

@@ -109,13 +109,6 @@ export default function Login() {
 
       // TODO: Check if user is already checked in, if user's event id is 000000 they are not checked in.
 
-      // this is if you need to add a user to the guest list but it doesn't look like we need to do that
-      // // IN EVENTS
-      // const guestListRef = ref(database, 'events/' + eventID + '/guestList/' + uid);
-
-      // // push the user's uid to the guest list
-      // const key = set(guestListRef, auth.user.firstName + " " + auth.user.lastName)
-
       console.log("Updating user's checked-in status...");
 
       // IN USERS    
@@ -123,7 +116,6 @@ export default function Login() {
 
       updates['/users/' + uid + '/eventId'] = eventID;
       updates['/users/' + uid + '/eventName'] = event.name;
-      updates['/users/' + uid + '/pastEvents/' + eventID] = event;
 
       // update the user's checked-in status
       update(ref(database), updates)

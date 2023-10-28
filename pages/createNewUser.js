@@ -123,10 +123,12 @@ const ConfirmationScreen = (props) => {
 
 }
 
-function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
-    return new Promise((resolve, reject) => {
-        const db = getDatabase();
-        set(ref(db, 'users/' + uid), {
+async function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
+    const db = getDatabase();
+
+    try {
+        // add to user list
+        await set(ref(db, 'users/' + uid), {
             uid: uid,
             phoneNumber: phoneNumber,
             firstName: firstName,
@@ -143,12 +145,20 @@ function writeNewUser(uid, phoneNumber, firstName, lastName, bigFam, year) {
             eventId: "NOT CHECKED IN",
             eventName: "NOT CHECKED IN",
             pastEvents: "",
-        }).then(() => {
-            resolve(true);
-        }).catch((error) => {
-            reject(error);
         });
-    });
+
+        // add to phone number list
+        await set(ref(db, 'phones/' + phoneNumber), uid);
+
+        // add to names list
+        await set(ref(db, 'names/' + firstName.toLowerCase() + " " + lastName.toLowerCase()), {
+            [uid]: uid,
+        });
+
+        return true;
+    } catch (error) {
+        throw error;
+    }
 }
 
 export default function CreateNewUser(props) {

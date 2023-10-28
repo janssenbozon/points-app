@@ -119,7 +119,7 @@ export default function Homepage() {
                 <h1 className=' w-full text-3xl font-bold font-lato pt-2 pb-2 text-start'>Point Summary</h1>
                 <div className="card w-full bg-base-300 shadow-xl px-4 py-4">
                     <div className="px-4 py-3">
-                        <h1 className='text-2xl font-bold font-lato pb-2'>Goodphil 2023!</h1>
+                        <h1 className='text-2xl font-bold font-lato pb-2'>Goodphil 2024</h1>
                         <progress className="progress progress-info w-full h-6" value={user.points.total} max="9"></progress>
                         <ProgressBar
                             category="Culture"
