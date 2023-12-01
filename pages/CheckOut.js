@@ -252,7 +252,7 @@ export default function Login() {
                     setShowCodeScreen(false)
                     setShowForfeit(true)
                 }}
-            >I don't know the code!</button>
+            >I don&apos;t know the code!</button>
             <button
               className='btn'
               type="submit"
