@@ -5,6 +5,7 @@ import { authentication, database } from '../firebase/clientApp.ts'
 import React, { useState, useEffect } from 'react';
 import { get, push, update, ref, set} from "firebase/database";
 import { useRouter } from 'next/router'
+import { user } from '../hooks/useAuth.js'
 
 export default function Login() {
 
@@ -18,7 +19,6 @@ export default function Login() {
     const [showCodeScreen, setShowCodeScreen] = useState(false)
     const [invalidCode, setInvalidCode] = useState(false)
     const [eventID, setEventID] = useState(null)
-    const uid = authentication.currentUser.uid;
 
     // Load event data from firebase before rendering
     useEffect(() => {
@@ -62,9 +62,9 @@ export default function Login() {
     // Add the user to the guest list and update their checked-in status, also update points
     function checkOut() {
 
-        console.log("Checking out user");
+        console.log("Checking out user with uid: " + user.uid);
 
-        const uid = authentication.currentUser.uid;
+        const uid = user.uid;
 
         // IN USERS
         const updates = {};
@@ -146,6 +146,8 @@ export default function Login() {
                                 setShowForfeit(false);
                                 setLoading(true);
 
+                                const uid = user.uid;
+
                                 const updates = {};
                                 updates['/users/' + uid + '/eventId'] = "NOT CHECKED IN";
                                 updates['/users/' + uid + '/eventName'] = "NOT CHECKED IN";
@@ -158,6 +160,7 @@ export default function Login() {
 
                                 update(ref(database), updates).then(() => {
                                     setShowCompletion(true);
+                                    setLoading(false);
                                 }).catch((error) => {
                                     console.error('Failed to update user\'s status:', error);
                                 });
