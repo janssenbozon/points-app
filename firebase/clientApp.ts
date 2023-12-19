@@ -2,8 +2,8 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore"
-import { getAuth } from "firebase/auth"
-import { getDatabase } from "firebase/database";
+import { getAuth, connectAuthEmulator } from "firebase/auth"
+import { getDatabase, connectDatabaseEmulator } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,9 +20,17 @@ const firebaseConfig = {
   databaseURL: "https://points-app-c2759-default-rtdb.firebaseio.com/"
 };
 
+const dev = true;
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const analytics = app.name && typeof window !== 'undefined' ? getAnalytics(app) : null;
 export const firestore = getFirestore();
 export const authentication = getAuth();
 export const database = getDatabase(app);
+
+if (dev) {
+  connectAuthEmulator(authentication, 'http://localhost:9099');
+  connectDatabaseEmulator(database, 'localhost', 9000);
+}
+

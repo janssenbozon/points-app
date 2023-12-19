@@ -7,6 +7,12 @@ const authContext = createContext()
 
 export function AuthProvider({ children }) {
   const auth = useProvideAuth()
+
+  // Expose the signout function for Cypress
+  if (typeof window !== 'undefined' && window.Cypress) {
+    window.signOut = auth.signout;
+  }
+
   return <authContext.Provider value={auth}>{children}</authContext.Provider>
 }
 

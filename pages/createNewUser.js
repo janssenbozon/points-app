@@ -18,20 +18,22 @@ const Prompt = (props) => {
             <input
                 type="text"
                 value={props.value}
+                id={props.id}
                 class="input input-bordered w-full max-w-xs"
                 onChange={e => props.inputFunction(e.target.value)}
             />
 
             <div className="flex flex-row space-x-2 justify-center align-middle pt-4">
-                {props.showBackButton ? <button type="submit" className="btn" onClick={props.backFunction}>Back</button> : null}
+                {props.showBackButton ? <button type="submit" id='backButton' className="btn" onClick={props.backFunction}>Back</button> : null}
                 <button
                     type="submit"
                     className="btn"
+                    id='nextButton'
                     onClick={props.screenFunction}
                 >Next</button>
             </div>
 
-            
+
 
         </div>
     )
@@ -47,19 +49,20 @@ const YearPrompt = (props) => {
                 {props.largeText}
             </h1>
             <h2 className='text-md font-bold pb-4'>{props.smallText}</h2>
-            <select className="select select-bordered w-full max-w-xs" value={props.value} onChange={(e) => props.inputFunction(e.target.value)}>
+            <select id='yearInput' className="select select-bordered w-full max-w-xs" value={props.value} onChange={(e) => props.inputFunction(e.target.value)}>
                 <option disabled selected>Select your year</option>
                 <option value="Freshman">Freshman</option>
-                <option  value="Sophomore">Sophomore</option>
-                <option  value="Junior">Junior</option>
-                <option  value="Senior">Senior</option>
-                <option  value="Graduate">Graduate</option>
+                <option value="Sophomore">Sophomore</option>
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
+                <option value="Graduate">Graduate</option>
             </select>
             <div className="flex space-x-2 justify-center pt-4">
-                <button type="submit" className="btn" onClick={props.backFunction}>Back</button>
+                <button id='backButton' type="submit" className="btn" onClick={props.backFunction}>Back</button>
                 <button
                     type="submit"
                     className="btn"
+                    id='nextButton'
                     onClick={props.screenFunction}
                 >Next</button>
             </div>
@@ -76,19 +79,20 @@ const FamPrompt = (props) => {
                 {props.largeText}
             </h1>
             <h2 className='text-md font-bold pb-4'>{props.smallText}</h2>
-            <select className="select select-bordered w-full max-w-xs" value={props.value} onChange={(e) => props.inputFunction(e.target.value)}>
+            <select id="bigFamInput" className="select select-bordered w-full max-w-xs" value={props.value} onChange={(e) => props.inputFunction(e.target.value)}>
                 <option disabled selected>Select your big fam</option>
                 <option value="Dora and Diego">Dora and Diego</option>
-                <option  value="Backyardigans">Backyardigans</option>
-                <option  value="Wonder Pets">Wonder Pets</option>
-                <option  value="Sesame Street">Sesame Street</option>
-                <option  value="I don'&apos;t know">I dont know</option>
+                <option value="Backyardigans">Backyardigans</option>
+                <option value="Wonder Pets">Wonder Pets</option>
+                <option value="Sesame Street">Sesame Street</option>
+                <option value="I don'&apos;t know">I dont know</option>
             </select>
             <div className="flex space-x-2 justify-center pt-4">
-                <button type="submit" className="btn" onClick={props.backFunction}>Back</button>
+                <button id='backButton' type="submit" className="btn" onClick={props.backFunction}>Back</button>
                 <button
                     type="submit"
                     className="btn"
+                    id='nextButton'
                     onClick={props.screenFunction}
                 >Next</button>
             </div>
@@ -101,10 +105,8 @@ const FamPrompt = (props) => {
 const ConfirmationScreen = (props) => {
 
     return (
-        <>
-            <div>
-                <CheckCircleIcon className='h-full w-full text-green-400'></CheckCircleIcon>
-            </div>
+        <div class="flex min-h-screen flex-col justify-center items-center p-24" >
+            <CheckCircleIcon className='h-1/3 w-1/3 text-green-400 text-center'></CheckCircleIcon>
             <h1 className="text-2xl font-bold font-lato text-center">
                 {props.largeText}
             </h1>
@@ -114,11 +116,12 @@ const ConfirmationScreen = (props) => {
                     <button
                         type="submit"
                         class="btn"
+                        id='nextButton'
                         onClick={props.screenFunction}
                     >Go to Homepage</button>
                 </div>
             </div>
-        </>
+        </div>
     )
 
 }
@@ -188,6 +191,7 @@ export default function CreateNewUser(props) {
                             largeText="You're verified! Now let's get to know you better."
                             smallText="What's your first name?"
                             value={firstName}
+                            id="firstNameInput"
                             inputFunction={setFirstName}
                             screenFunction={() => setScreen(2)}
                         />
@@ -203,6 +207,7 @@ export default function CreateNewUser(props) {
                         largeText={`Hi, ${firstName}!`}
                         smallText="What's your last name?"
                         value={lastName}
+                        id="lastNameInput"
                         inputFunction={setLastName}
                         screenFunction={() => setScreen(3)}
                         showBackButton={true}

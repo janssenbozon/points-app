@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch",
+    "start:emulators": "yarn firebase emulators:start",
+    "start:dev-server": "./scripts/dev-server.sh",
+    "start:cypress": "yarn run cypress open",
+    "start:tests": "yarn start:emulators && yarn wait-on http://localhost:4400 && yarn start:dev-server && yarn wait-on http://localhost:3000 && yarn start:cypress",
     "speed-deploy": "next build && next export && firebase deploy --only hosting"
   },
   "dependencies": {
@@ -23,11 +26,13 @@
     "jest-environment-jsdom": "^29.6.1",
     "next": "^13.4.10",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "wait-on": "^7.2.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",
     "autoprefixer": "^10.4.7",
+    "cypress": "^13.6.1",
     "daisyui": "^3.7.7",
     "eslint": "8.18.0",
     "eslint-config-next": "^13.4.10",

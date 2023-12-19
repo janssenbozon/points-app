@@ -49,6 +49,12 @@ export default function Login() {
 
     console.log("Phone number: " + phoneNumber)
 
+    if (phoneNumber.length !== 10) {
+      setError("auth/invalid-phone-number");
+      setLoading(false);
+      return;
+    }
+
     try {
       var result = await auth.requestOTP(phoneNumber);
       setPhoneInputShown(false);
@@ -81,6 +87,7 @@ export default function Login() {
                 </div>
                 <input
                   type="tel"
+                  id='phoneInput'
                   value={phoneNumber}
                   className="input input-bordered w-full pl-11 pr-12"
                   placeholder="(000) 000 - 0000"
@@ -118,6 +125,7 @@ export default function Login() {
                 <input
                   type="tel"
                   value={otp}
+                  id='otpInput'
                   onChange={e => setOTP(e.target.value)}
                   className="input input-bordered w-full pl-11 pr-12"
                 />

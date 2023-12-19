@@ -76,7 +76,9 @@ export default function Homepage() {
         return (
             <>
                 <div className="container mx-auto pt-3">
-                    <button type="button"
+                    <button 
+                        id='signOutButton'
+                        type="button"
                         className="btn w-full bg-red-400 text-white leading-tight uppercase shadow-md hover:bg-red-500 hover:shadow-lg focus:bg-red-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-700 active:shadow-lg transition duration-150 ease-in-out"
                         onClick={() => {
                             auth.signout().then(() => {
